@@ -23,6 +23,7 @@ reqwest = { version = "0.11", features = [
     "json",
     "rustls-tls",
 ], default-features = false }
+once_cell = "1.8.0"
 serde = { version = "1", features = ["derive"] }
 serde-aux = "2.3.0"
 tracing = { version = "0.1", features = ["log"] }
@@ -34,7 +35,7 @@ tracing-subscriber = { version = "0.2.12", features = [
 tracing-bunyan-formatter = "0.2.6"
 tracing-log = "0.1.2"
 tracing-actix-web = "0.4.0-beta.8"
-once_cell = "1.8.0"
+uuid = { version = "0.8.1", features = ["v4"] }
 
 
 [dependencies.sqlx]
