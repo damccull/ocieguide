@@ -1,7 +1,7 @@
 # ocieguide readme
 
 ## Status
-[![CI](https://github.com/damccull/ocieguide/actions/workflows/ci.yml/badge.svg)](https://github.com/damccull/ocieguide/actions/workflows/ci.yml) [![Security audit](https://github.com/damccull/ocieguide/actions/workflows/dependency-security-audit.yml/badge.svg)](https://github.com/damccull/ocieguide/actions/workflows/dependency-security-audit.yml)
+[![CI](https://github.com/damccull/ocieguide/actions/workflows/ci.yml/badge.svg)](https://github.com/damccull/ocieguide/actions/workflows/ci.yml) [![Security Audit](https://github.com/damccull/ocieguide/actions/workflows/dependency-security-audit.yml/badge.svg)](https://github.com/damccull/ocieguide/actions/workflows/dependency-security-audit.yml)
 ## Project Goal
 This project aims to create and host a web application that will allow soldiers
 to easily search for and identify their organizational clothing and individual
