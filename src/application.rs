@@ -74,7 +74,7 @@ fn run(listener: TcpListener, db_pool: PgPool, base_url: String) -> Result<Serve
 }
 
 /// Returns a `PgPool`
-/// 
+///
 /// Public so that the integration tests can use this too.
 pub fn get_connection_pool(configuration: &DatabaseSettings) -> PgPool {
     PgPoolOptions::new()
