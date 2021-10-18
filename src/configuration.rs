@@ -1,7 +1,8 @@
-//! This module handles settings for the server. The high level `Settings` object
-//! holds subcategories that contain individual settings. It may also contain
-//! individual settings that don't fit into an existing category and don't warrant
-//! an entirely new subcategory.
+//! This module handles settings for the server.
+//! 
+//! The root [`Settings`] struct holds subcategories that contain individual
+//! settings. It may also contain individual settings that don't fit into an existing
+//! category and don't warrant an entirely new subcategory.
 
 use std::convert::{TryFrom, TryInto};
 
@@ -13,7 +14,7 @@ use sqlx::{
 use tracing::log::LevelFilter;
 
 /// Initializes the server's settings from configuration files and environment variables
-/// and returns a `Settings` object.
+/// and returns a [`Settings`] struct.
 pub fn get_configuration() -> Result<Settings, config::ConfigError> {
     // Initialize the configuration reader
     let mut settings = config::Config::default();
@@ -46,7 +47,8 @@ pub fn get_configuration() -> Result<Settings, config::ConfigError> {
     settings.try_into()
 }
 
-/// The high-level settings object
+/// The root settings struct.
+/// 
 /// See `get_configuration` for the preferred way to instantiate this.
 #[derive(Clone, serde::Deserialize)]
 pub struct Settings {
@@ -55,6 +57,7 @@ pub struct Settings {
 }
 
 /// Represents database specific settings.
+/// 
 /// See `get_configuration` for the preferred way to instantiate this.
 #[derive(Clone, serde::Deserialize)]
 pub struct DatabaseSettings {
@@ -90,6 +93,7 @@ impl DatabaseSettings {
 }
 
 /// Represents application specific settings.
+/// 
 /// See `get_configuration` for the preferred way to instantiate this.
 #[derive(Clone, serde::Deserialize)]
 pub struct ApplicationSettings {
@@ -116,7 +120,7 @@ impl Environment {
 impl TryFrom<String> for Environment {
     type Error = String;
 
-    /// Attempts to parse a `Environment` from a given string.
+    /// Attempts to parse an [`Environment`] from a given string.
     /// Returns an error if the given environment string is invalid.
     fn try_from(s: String) -> Result<Self, Self::Error> {
         match s.to_lowercase().as_str() {
