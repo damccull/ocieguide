@@ -1,8 +1,17 @@
 use std::net::TcpListener;
 
-use actix_web::{App, HttpServer, dev::Server, web::{self, Data}};
-use sqlx::{PgPool, postgres::PgPoolOptions};
+use actix_web::{
+    dev::Server,
+    web::{self, Data},
+    App, HttpServer,
+};
+use sqlx::{postgres::PgPoolOptions, PgPool};
 use tracing_actix_web::TracingLogger;
+
+use crate::{
+    configuration::{DatabaseSettings, Settings},
+    routes::health_check,
+};
 
 pub struct Application {
     port: u16,
@@ -41,7 +50,9 @@ impl Application {
     }
 
     // Name makes it clear this will run until stopped
-    pub async fn run_until_stopped(self) -> Result<(), std::io::Error> {}
+    pub async fn run_until_stopped(self) -> Result<(), std::io::Error> {
+        self.server.await
+    }
 }
 
 fn run(listener: TcpListener, db_pool: PgPool, base_url: String) -> Result<Server, std::io::Error> {
@@ -57,7 +68,7 @@ fn run(listener: TcpListener, db_pool: PgPool, base_url: String) -> Result<Serve
             .app_data(db_pool.clone())
             .app_data(base_url.clone())
     })
-    .listen(listener)
+    .listen(listener)?
     .run();
     Ok(server)
 }
