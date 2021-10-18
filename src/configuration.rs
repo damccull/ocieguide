@@ -1,5 +1,5 @@
 //! This module handles settings for the server.
-//! 
+//!
 //! The root [`Settings`] struct holds subcategories that contain individual
 //! settings. It may also contain individual settings that don't fit into an existing
 //! category and don't warrant an entirely new subcategory.
@@ -48,7 +48,7 @@ pub fn get_configuration() -> Result<Settings, config::ConfigError> {
 }
 
 /// The root settings struct.
-/// 
+///
 /// See `get_configuration` for the preferred way to instantiate this.
 #[derive(Clone, serde::Deserialize)]
 pub struct Settings {
@@ -57,7 +57,7 @@ pub struct Settings {
 }
 
 /// Represents database specific settings.
-/// 
+///
 /// See `get_configuration` for the preferred way to instantiate this.
 #[derive(Clone, serde::Deserialize)]
 pub struct DatabaseSettings {
@@ -93,7 +93,7 @@ impl DatabaseSettings {
 }
 
 /// Represents application specific settings.
-/// 
+///
 /// See `get_configuration` for the preferred way to instantiate this.
 #[derive(Clone, serde::Deserialize)]
 pub struct ApplicationSettings {
