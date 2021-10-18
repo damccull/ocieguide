@@ -1,5 +1,7 @@
 use once_cell::sync::Lazy;
-use sqlx::{ConnectOptions, Executor};
+use sqlx::{postgres::PgPoolOptions, PgConnection, PgPool};
+use tracing::log::LevelFilter;
+use uuid::Uuid;
 
 static TRACING: Lazy<()> = Lazy::new(|| {
     let default_filter_level = "info".to_string();
@@ -37,7 +39,7 @@ impl TestApp {
         configure_database(&configuration.database).await;
 
         // Launch the application as a background task
-        let application = Application::build(configuraiton.clone())
+        let application = Application::build(configuration.clone())
             .await
             .expect("Failed to build the application.");
 
@@ -85,4 +87,6 @@ async fn configure_database(config: &DatabaseSettings) -> PgPool {
         .run(&connection_pool)
         .await
         .expect("Failed to migrate the database.");
+
+    connection_pool
 }
