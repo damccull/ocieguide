@@ -1,3 +1,5 @@
+use ocieguide::{application::Application, configuration::get_configuration};
+
 #[actix_web::main]
 async fn main() {
     // Set up logging using tracing, tracing-subscriber, and tracing-bunyan-formatter
