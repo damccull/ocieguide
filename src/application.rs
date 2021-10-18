@@ -73,7 +73,10 @@ fn run(listener: TcpListener, db_pool: PgPool, base_url: String) -> Result<Serve
     Ok(server)
 }
 
-fn get_connection_pool(configuration: &DatabaseSettings) -> PgPool {
+/// Returns a `PgPool`
+/// 
+/// Public so that the integration tests can use this too.
+pub fn get_connection_pool(configuration: &DatabaseSettings) -> PgPool {
     PgPoolOptions::new()
         .connect_timeout(std::time::Duration::from_secs(2))
         .connect_lazy_with(configuration.with_db())
