@@ -13,7 +13,10 @@ use tracing_actix_web::TracingLogger;
 
 use crate::{
     configuration::{DatabaseSettings, Settings},
-    graphql::{self, OcieguideSchema, QueryRoot, StarWars},
+    graphql::{
+        starwars_schema::{StarWars, StarWarsSchema},
+        QueryRoot,
+    },
     routes::{graphql, graphql_playground, health_check},
 };
 
@@ -40,7 +43,7 @@ impl Application {
         // can use random ports
         let port = listener.local_addr().unwrap().port();
 
-        let graphql_schema = OcieguideSchema::build(QueryRoot, EmptyMutation, EmptySubscription)
+        let graphql_schema = StarWarsSchema::build(QueryRoot, EmptyMutation, EmptySubscription)
             .data(StarWars::new())
             .finish();
 
@@ -67,7 +70,7 @@ impl Application {
 fn run(
     listener: TcpListener,
     db_pool: PgPool,
-    graphql_schema: OcieguideSchema,
+    graphql_schema: StarWarsSchema,
     base_url: String,
 ) -> Result<Server, std::io::Error> {
     // Wrap shared things in smart pointers

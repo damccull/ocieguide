@@ -5,7 +5,7 @@ use slab::Slab;
 
 use super::{Episode, QueryRoot};
 
-pub type OcieguideSchema = Schema<QueryRoot, EmptyMutation, EmptySubscription>;
+pub type StarWarsSchema = Schema<QueryRoot, EmptyMutation, EmptySubscription>;
 
 pub struct StarWarsChar {
     pub id: &'static str,
