@@ -1,4 +1,3 @@
-use actix_http::HttpMessage;
 use actix_web::Result;
 use actix_web::{web, HttpResponse};
 use async_graphql::http::{playground_source, GraphQLPlaygroundConfig};
