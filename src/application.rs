@@ -14,8 +14,8 @@ use tracing_actix_web::TracingLogger;
 use crate::{
     configuration::{DatabaseSettings, Settings},
     graphql::{
+        starwars_model::QueryRoot,
         starwars_schema::{StarWars, StarWarsSchema},
-        QueryRoot,
     },
     routes::{graphql, graphql_playground, health_check},
 };

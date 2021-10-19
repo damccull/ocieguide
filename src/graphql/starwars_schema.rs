@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use async_graphql::{EmptyMutation, EmptySubscription, Schema};
 use slab::Slab;
 
-use super::{Episode, QueryRoot};
+use super::starwars_model::{Episode, QueryRoot};
 
 pub type StarWarsSchema = Schema<QueryRoot, EmptyMutation, EmptySubscription>;
 
