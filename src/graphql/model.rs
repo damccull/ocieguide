@@ -3,7 +3,7 @@ use async_graphql::{
     Context, Interface, Object, Result,
 };
 
-use super::StarWars;
+use super::starwars_schema::StarWars;
 
 pub struct QueryRoot;
 #[Object]

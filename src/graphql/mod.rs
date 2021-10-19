@@ -1,5 +1,5 @@
 mod model;
-mod schema;
+pub mod ocieguide_schema;
+pub mod starwars_schema;
 
 pub use model::*;
-pub use schema::*;
