@@ -37,7 +37,10 @@ tracing-bunyan-formatter = "0.2.6"
 tracing-log = "0.1.2"
 tracing-actix-web = "0.4.0-beta.8"
 uuid = { version = "0.8.1", features = ["v4"] }
-
+async-graphql = { git = "https://github.com/async-graphql/async-graphql.git", branch = "actix-web-v4-beta" }
+async-graphql-actix-web = { git = "https://github.com/async-graphql/async-graphql.git", branch = "actix-web-v4-beta" }
+slab = "0.4.5"
+actix-cors = "0.6.0-beta.2"
 
 [dependencies.sqlx]
 version = "0.5.9"

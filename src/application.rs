@@ -1,16 +1,23 @@
 use std::net::TcpListener;
 
+use actix_cors::Cors;
 use actix_web::{
     dev::Server,
+    guard,
     web::{self, Data},
     App, HttpServer,
 };
+use async_graphql::{EmptyMutation, EmptySubscription};
 use sqlx::{postgres::PgPoolOptions, PgPool};
 use tracing_actix_web::TracingLogger;
 
 use crate::{
     configuration::{DatabaseSettings, Settings},
-    routes::health_check,
+    graphql::{
+        starwars_model::QueryRoot,
+        starwars_schema::{StarWars, StarWarsSchema},
+    },
+    routes::{graphql, graphql_playground, health_check},
 };
 
 pub struct Application {
@@ -36,9 +43,14 @@ impl Application {
         // can use random ports
         let port = listener.local_addr().unwrap().port();
 
+        let graphql_schema = StarWarsSchema::build(QueryRoot, EmptyMutation, EmptySubscription)
+            .data(StarWars::new())
+            .finish();
+
         let server = run(
             listener,
             connection_pool,
+            graphql_schema,
             configuration.application.base_url,
         )?;
 
@@ -55,18 +67,39 @@ impl Application {
     }
 }
 
-fn run(listener: TcpListener, db_pool: PgPool, base_url: String) -> Result<Server, std::io::Error> {
+fn run(
+    listener: TcpListener,
+    db_pool: PgPool,
+    graphql_schema: StarWarsSchema,
+    base_url: String,
+) -> Result<Server, std::io::Error> {
     // Wrap shared things in smart pointers
     let db_pool = Data::new(db_pool);
     let base_url = Data::new(base_url);
+    let graphql_schema = Data::new(graphql_schema);
 
     // Capture the connection from the surrounding environment
     let server = HttpServer::new(move || {
         App::new()
+            .wrap(
+                Cors::default()
+                    .allow_any_origin()
+                    .allow_any_header()
+                    .allowed_methods(vec!["POST", "GET"])
+                    .supports_credentials()
+                    .max_age(3600),
+            )
             .wrap(TracingLogger::default())
             .route("/health_check", web::get().to(health_check))
+            .service(web::resource("/graphql").guard(guard::Post()).to(graphql))
+            .service(
+                web::resource("/graphql_playground")
+                    .guard(guard::Get())
+                    .to(graphql_playground),
+            )
             .app_data(db_pool.clone())
             .app_data(base_url.clone())
+            .app_data(graphql_schema.clone())
     })
     .listen(listener)?
     .run();
