@@ -70,21 +70,22 @@ pub enum OcieItemEvent {
     Removed(OcieItemData),
 }
 impl OcieItemEvent {
-    pub fn added(
-        lin: &str,
-        nsn: &str,
-        nomenclature: &str,
-        size: Option<String>,
-        menu: Option<String>,
-    ) -> OcieItemEvent {
-        OcieItemEvent::Added(OcieItemData {
-            lin: lin.to_owned(),
-            nsn: nsn.to_owned(),
-            nomenclature: nomenclature.to_owned(),
-            size,
-            menu,
-        })
-    }
+    // Not needed because information_updated will create if necessary
+    // pub fn added(
+    //     lin: &str,
+    //     nsn: &str,
+    //     nomenclature: &str,
+    //     size: Option<String>,
+    //     menu: Option<String>,
+    // ) -> OcieItemEvent {
+    //     OcieItemEvent::Added(OcieItemData {
+    //         lin: lin.to_owned(),
+    //         nsn: nsn.to_owned(),
+    //         nomenclature: nomenclature.to_owned(),
+    //         size,
+    //         menu,
+    //     })
+    // }
 
     pub fn updated(
         lin: &str,
