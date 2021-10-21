@@ -1,8 +1,6 @@
 //! This module houses the events that are stored in event
 //! streams to make up the reality of this application
 
-use std::convert::TryFrom;
-
 use regex::Regex;
 
 #[derive(Debug)]
