@@ -41,6 +41,7 @@ async-graphql = { git = "https://github.com/async-graphql/async-graphql.git", br
 async-graphql-actix-web = { git = "https://github.com/async-graphql/async-graphql.git", branch = "actix-web-v4-beta" }
 slab = "0.4.5"
 actix-cors = "0.6.0-beta.2"
+regex = "1.5.4"
 
 [dependencies.sqlx]
 version = "0.5.9"
