@@ -7,8 +7,8 @@ use regex::Regex;
 pub struct OcieItemAggregate {
     version: usize,
     pub nsn: NationalStockNumber,
-    pub lin: LineItemNumber,
-    pub nomenclature: String,
+    pub lin: Option<LineItemNumber>,
+    pub nomenclature: Option<String>,
     //pub name: String,
     pub size: Option<String>,
     pub menu: Option<String>,
@@ -23,9 +23,9 @@ impl OcieItemAggregate {
     ) -> OcieItemAggregate {
         OcieItemAggregate {
             version: 1,
-            lin: LineItemNumber::parse(lin.to_string()).unwrap(),
+            lin: Some(LineItemNumber::parse(lin.to_string()).unwrap()),
             nsn: NationalStockNumber::parse(nsn.to_string()).unwrap(),
-            nomenclature: nomenclature.to_owned(),
+            nomenclature: Some(nomenclature.to_owned()),
             size,
             menu,
         }
