@@ -16,7 +16,7 @@ pub struct OcieItemAggregate {
     pub menu: Option<String>,
 }
 impl OcieItemAggregate {
-    fn new(
+    pub fn new(
         lin: &str,
         nsn: &str,
         nomenclature: &str,
@@ -33,7 +33,7 @@ impl OcieItemAggregate {
         }
     }
 
-    fn update(
+    pub fn update(
         lin: &str,
         nsn: &str,
         nomenclature: &str,
@@ -49,7 +49,7 @@ impl OcieItemAggregate {
         })
     }
 
-    fn remove(
+    pub fn remove(
         lin: &str,
         nsn: &str,
         nomenclature: &str,
@@ -72,7 +72,7 @@ pub enum OcieItemEvent {
     Removed(OcieItemData),
 }
 impl OcieItemEvent {
-    fn added(
+    pub fn added(
         lin: &str,
         nsn: &str,
         nomenclature: &str,
@@ -88,7 +88,7 @@ impl OcieItemEvent {
         })
     }
 
-    fn updated(
+    pub fn updated(
         lin: &str,
         nsn: &str,
         nomenclature: &str,
@@ -104,7 +104,7 @@ impl OcieItemEvent {
         })
     }
 
-    fn removed(
+    pub fn removed(
         lin: &str,
         nsn: &str,
         nomenclature: &str,
@@ -142,7 +142,7 @@ trait Aggregate {
 #[derive(Debug)]
 pub struct NationalStockNumber(String);
 impl NationalStockNumber {
-    fn parse(value: String) -> Result<Self, String> {
+    pub fn parse(value: String) -> Result<Self, String> {
         let nsn_regex = Regex::new(r#"^\d{4}-\d{2}-\d{3}-\d{4}$"#).unwrap();
         if !nsn_regex.is_match(&value) {
             return Err("The NSN was not properly formatted.".to_string());
