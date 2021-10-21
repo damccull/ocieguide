@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug)]
 pub struct OcieItemAggregate {
-    version: usize,
+    version: u64,
     nsn: NationalStockNumber,
     lin: Option<LineItemNumber>,
     nomenclature: Option<String>,
@@ -78,6 +78,35 @@ impl OcieItemAggregate {
     }
     pub fn menu(&self) -> &NationalStockNumber {
         &self.nsn
+    }
+}
+
+impl Aggregate for OcieItemAggregate {
+    type Item = OcieItemEvent;
+
+    fn version(&self) -> u64 {
+        self.version
+    }
+
+    fn apply(&self, evt: &Self::Item) -> Self
+    where
+        Self: Sized,
+    {
+        let agg = OcieItemAggregate {
+            version: self.version + 1,
+            nsn: NationalStockNumber::default(),
+            lin: None,
+            nomenclature: None,
+            size: None,
+            menu: None,
+        };
+
+        match evt {
+            OcieItemEvent::Added(_) => todo!(),
+            OcieItemEvent::Updated(_) => todo!(),
+            OcieItemEvent::Removed(_) => todo!(),
+        }
+        agg
     }
 }
 
@@ -174,6 +203,11 @@ impl NationalStockNumber {
 impl AsRef<str> for NationalStockNumber {
     fn as_ref(&self) -> &str {
         &self.0
+    }
+}
+impl Default for NationalStockNumber {
+    fn default() -> Self {
+        NationalStockNumber("0000-00-000-0000".to_string())
     }
 }
 
