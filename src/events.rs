@@ -31,7 +31,7 @@ impl OcieItemAggregate {
         }
     }
 
-    pub fn update(
+    pub fn update_information(
         lin: &str,
         nsn: &str,
         nomenclature: &str,
@@ -87,7 +87,7 @@ impl OcieItemEvent {
     //     })
     // }
 
-    pub fn updated(
+    pub fn information_updated(
         lin: &str,
         nsn: &str,
         nomenclature: &str,
