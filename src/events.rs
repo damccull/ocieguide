@@ -25,7 +25,7 @@ impl OcieItemAggregate {
     ) -> OcieItemAggregate {
         OcieItemAggregate {
             version: 1,
-            lin: lin.to_owned(),
+            lin: LineItemNumber::parse(lin.to_string()).unwrap(),
             nsn: NationalStockNumber::parse(nsn.to_string()).unwrap(),
             nomenclature: nomenclature.to_owned(),
             size,
@@ -149,6 +149,23 @@ impl NationalStockNumber {
     }
 }
 impl AsRef<str> for NationalStockNumber {
+    fn as_ref(&self) -> &str {
+        &self.0
+    }
+}
+
+#[derive(Debug)]
+pub struct LineItemNumber(String);
+impl LineItemNumber {
+    pub fn parse(value: String) -> Result<Self, String> {
+        let lin_regex = Regex::new(r#"^[a-zA-Z0-9]{1}\d{5}$"#).unwrap();
+        if !lin_regex.is_match(&value) {
+            return Err("The LIN was not properly formatted.".to_string());
+        }
+        Ok(Self(value))
+    }
+}
+impl AsRef<str> for LineItemNumber {
     fn as_ref(&self) -> &str {
         &self.0
     }
