@@ -2,65 +2,82 @@
 //! streams to make up the reality of this application
 
 use regex::Regex;
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug)]
 pub struct OcieItemAggregate {
     version: usize,
-    pub nsn: NationalStockNumber,
-    pub lin: Option<LineItemNumber>,
-    pub nomenclature: Option<String>,
-    //pub name: String,
-    pub size: Option<String>,
-    pub menu: Option<String>,
+    nsn: NationalStockNumber,
+    lin: Option<LineItemNumber>,
+    nomenclature: Option<String>,
+    //name: String,
+    size: Option<String>,
+    menu: Option<String>,
 }
 impl OcieItemAggregate {
     pub fn new(
-        lin: &str,
-        nsn: &str,
-        nomenclature: &str,
+        lin: Option<LineItemNumber>,
+        nsn: NationalStockNumber,
+        nomenclature: Option<String>,
         size: Option<String>,
         menu: Option<String>,
     ) -> OcieItemAggregate {
         OcieItemAggregate {
             version: 1,
-            lin: Some(LineItemNumber::parse(lin.to_string()).unwrap()),
-            nsn: NationalStockNumber::parse(nsn.to_string()).unwrap(),
-            nomenclature: Some(nomenclature.to_owned()),
+            lin,
+            nsn,
+            nomenclature,
             size,
             menu,
         }
     }
 
     pub fn update_information(
-        lin: &str,
-        nsn: &str,
-        nomenclature: &str,
+        lin: Option<LineItemNumber>,
+        nsn: NationalStockNumber,
+        nomenclature: Option<String>,
         size: Option<String>,
         menu: Option<String>,
     ) -> OcieItemEvent {
         OcieItemEvent::Updated(OcieItemData {
-            lin: lin.to_owned(),
-            nsn: nsn.to_owned(),
-            nomenclature: nomenclature.to_owned(),
+            lin,
+            nsn,
+            nomenclature,
             size,
             menu,
         })
     }
 
     pub fn remove(
-        lin: &str,
-        nsn: &str,
-        nomenclature: &str,
+        lin: Option<LineItemNumber>,
+        nsn: NationalStockNumber,
+        nomenclature: Option<String>,
         size: Option<String>,
         menu: Option<String>,
     ) -> OcieItemEvent {
         OcieItemEvent::Removed(OcieItemData {
-            lin: lin.to_owned(),
-            nsn: nsn.to_owned(),
-            nomenclature: nomenclature.to_owned(),
+            lin,
+            nsn,
+            nomenclature,
             size,
             menu,
         })
+    }
+
+    pub fn nsn(&self) -> &NationalStockNumber {
+        &self.nsn
+    }
+    pub fn lin(&self) -> &Option<LineItemNumber> {
+        &self.lin
+    }
+    pub fn nomenclature(&self) -> &Option<String> {
+        &self.nomenclature
+    }
+    pub fn size(&self) -> &NationalStockNumber {
+        &self.nsn
+    }
+    pub fn menu(&self) -> &NationalStockNumber {
+        &self.nsn
     }
 }
 
@@ -88,44 +105,49 @@ impl OcieItemEvent {
     // }
 
     pub fn information_updated(
-        lin: &str,
-        nsn: &str,
-        nomenclature: &str,
+        lin: Option<LineItemNumber>,
+        nsn: NationalStockNumber,
+        nomenclature: Option<String>,
         size: Option<String>,
         menu: Option<String>,
     ) -> OcieItemEvent {
         OcieItemEvent::Updated(OcieItemData {
-            lin: lin.to_owned(),
-            nsn: nsn.to_owned(),
-            nomenclature: nomenclature.to_owned(),
+            lin,
+            nsn,
+            nomenclature,
             size,
             menu,
         })
     }
 
     pub fn removed(
-        lin: &str,
-        nsn: &str,
-        nomenclature: &str,
+        lin: Option<LineItemNumber>,
+        nsn: NationalStockNumber,
+        nomenclature: Option<String>,
         size: Option<String>,
         menu: Option<String>,
     ) -> OcieItemEvent {
         OcieItemEvent::Removed(OcieItemData {
-            lin: lin.to_owned(),
-            nsn: nsn.to_owned(),
-            nomenclature: nomenclature.to_owned(),
+            lin,
+            nsn,
+            nomenclature,
             size,
             menu,
         })
     }
 }
 
+#[derive(Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct OcieItemData {
-    pub lin: String,
-    pub nsn: String,
-    pub nomenclature: String,
-    //pub name: String,
+    pub nsn: NationalStockNumber,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub lin: Option<LineItemNumber>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub nomenclature: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub size: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub menu: Option<String>,
 }
 
@@ -138,7 +160,7 @@ trait Aggregate {
         Self: Sized;
 }
 
-#[derive(Debug)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct NationalStockNumber(String);
 impl NationalStockNumber {
     pub fn parse(value: String) -> Result<Self, String> {
@@ -155,7 +177,7 @@ impl AsRef<str> for NationalStockNumber {
     }
 }
 
-#[derive(Debug)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct LineItemNumber(String);
 impl LineItemNumber {
     pub fn parse(value: String) -> Result<Self, String> {
