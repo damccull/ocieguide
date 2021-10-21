@@ -1,11 +1,15 @@
 //! This module houses the events that are stored in event
 //! streams to make up the reality of this application
 
+use std::convert::TryFrom;
+
+use regex::Regex;
+
 #[derive(Debug)]
 pub struct OcieItemAggregate {
     version: usize,
     pub lin: String,
-    pub nsn: String,
+    pub nsn: NationalStockNumber,
     pub nomenclature: String,
     //pub name: String,
     pub size: Option<String>,
@@ -22,7 +26,7 @@ impl OcieItemAggregate {
         OcieItemAggregate {
             version: 1,
             lin: lin.to_owned(),
-            nsn: nsn.to_owned(),
+            nsn: NationalStockNumber::parse(nsn.to_string()).unwrap(),
             nomenclature: nomenclature.to_owned(),
             size,
             menu,
@@ -133,4 +137,19 @@ trait Aggregate {
     fn apply(&self, evt: &Self::Item) -> Self
     where
         Self: Sized;
+}
+
+#[derive(Debug)]
+pub struct NationalStockNumber(String);
+impl NationalStockNumber {
+    fn parse(value: String) -> Result<Self, String> {
+        let nsn_regex = Regex::new(r#"^\d{4}-\d{2}-\d{3}-\d{4}$"#).unwrap();
+        nsn_regex.is_match(&value);
+        Ok(Self(value))
+    }
+}
+impl AsRef<str> for NationalStockNumber {
+    fn as_ref(&self) -> &str {
+        &self.0
+    }
 }
