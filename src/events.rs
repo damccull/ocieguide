@@ -6,7 +6,7 @@ use regex::Regex;
 #[derive(Debug)]
 pub struct OcieItemAggregate {
     version: usize,
-    pub lin: String,
+    pub lin: LineItemNumber,
     pub nsn: NationalStockNumber,
     pub nomenclature: String,
     //pub name: String,
