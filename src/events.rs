@@ -144,7 +144,9 @@ pub struct NationalStockNumber(String);
 impl NationalStockNumber {
     fn parse(value: String) -> Result<Self, String> {
         let nsn_regex = Regex::new(r#"^\d{4}-\d{2}-\d{3}-\d{4}$"#).unwrap();
-        nsn_regex.is_match(&value);
+        if !nsn_regex.is_match(&value) {
+            return Err("The NSN was not properly formatted.".to_string());
+        }
         Ok(Self(value))
     }
 }
