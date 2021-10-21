@@ -1,4 +1,4 @@
-CREATE TABLE events(
+CREATE TABLE ocieitem_events(
     id uuid NOT NULL,
     PRIMARY KEY (id),
     stream_id uuid NOT NULL,
