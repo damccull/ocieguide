@@ -17,7 +17,7 @@ use crate::{
         starwars_model::QueryRoot,
         starwars_schema::{StarWars, StarWarsSchema},
     },
-    routes::{graphql, graphql_playground, health_check},
+    routes::{graphql, graphql_playground, health_check, sw_graphql, sw_graphql_playground},
 };
 
 pub struct Application {
@@ -96,6 +96,16 @@ fn run(
                 web::resource("/graphql_playground")
                     .guard(guard::Get())
                     .to(graphql_playground),
+            )
+            .service(
+                web::resource("/sw_graphql")
+                    .guard(guard::Post())
+                    .to(sw_graphql),
+            )
+            .service(
+                web::resource("/sw_graphql_playground")
+                    .guard(guard::Get())
+                    .to(sw_graphql_playground),
             )
             .app_data(db_pool.clone())
             .app_data(base_url.clone())

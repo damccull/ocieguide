@@ -19,3 +19,18 @@ pub async fn graphql_playground() -> Result<HttpResponse> {
         .content_type("text/html; charset=utf-8")
         .body(source))
 }
+
+#[tracing::instrument(name = "Star Wars GraphQL Request", skip(schema, req))]
+pub async fn sw_graphql(schema: web::Data<StarWarsSchema>, req: Request) -> Response {
+    schema.execute(req.into_inner()).await.into()
+}
+
+#[tracing::instrument(name = "Star Wars Serve playground to client")]
+pub async fn sw_graphql_playground() -> Result<HttpResponse> {
+    let source = playground_source(
+        GraphQLPlaygroundConfig::new("/sw_graphql").subscription_endpoint("/sw_graphql"),
+    );
+    Ok(HttpResponse::Ok()
+        .content_type("text/html; charset=utf-8")
+        .body(source))
+}

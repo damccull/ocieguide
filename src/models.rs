@@ -11,6 +11,13 @@ pub struct OcieItem {
     pub size: Option<String>,
     pub menu: Option<String>,
 }
+impl OcieItem {
+    /// An `OcieItem` is valid only when it has at least one of:
+    /// NSN, LIN, Nomenclature
+    pub fn is_valid(&self) -> bool {
+        self.nsn.is_some() || self.lin.is_some() || self.nomenclature.is_some()
+    }
+}
 impl Default for OcieItem {
     fn default() -> Self {
         Self {
@@ -38,11 +45,6 @@ impl NationalStockNumber {
 impl AsRef<str> for NationalStockNumber {
     fn as_ref(&self) -> &str {
         &self.0
-    }
-}
-impl Default for NationalStockNumber {
-    fn default() -> Self {
-        NationalStockNumber("0000-00-000-0000".to_string())
     }
 }
 
