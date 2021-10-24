@@ -27,7 +27,7 @@ DB_PORT="${POSTGRES_PORT:=5432}"
 # Allow skipping Docker if a dockerized Postgres is already running
 if [[ -z "${SKIP_DOCKER}" ]]; then
     docker run \
-        --name zero2prod_db \
+        --name ocieguide_db \
         -e POSTGRES_USER=${DB_USER} \
         -e POSTGRES_PASSWORD=${DB_PASSWORD} \
         -e POSTGRES_DB=${DB_NAME} \
