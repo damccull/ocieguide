@@ -14,6 +14,7 @@ use tracing_actix_web::TracingLogger;
 use crate::{
     configuration::{DatabaseSettings, Settings},
     graphql::{
+        ocieguide::create_schema_with_context,
         starwars_model::QueryRoot,
         starwars_schema::{StarWars, StarWarsSchema},
     },
@@ -50,7 +51,7 @@ impl Application {
         let server = run(
             listener,
             connection_pool,
-            graphql_schema,
+            // graphql_schema,
             configuration.application.base_url,
         )?;
 
@@ -70,13 +71,14 @@ impl Application {
 fn run(
     listener: TcpListener,
     db_pool: PgPool,
-    graphql_schema: StarWarsSchema,
+    // graphql_schema: StarWarsSchema,
     base_url: String,
 ) -> Result<Server, std::io::Error> {
     // Wrap shared things in smart pointers
-    let db_pool = Data::new(db_pool);
+    // let db_pool = Data::new(db_pool);
     let base_url = Data::new(base_url);
-    let graphql_schema = Data::new(graphql_schema);
+    // let graphql_schema = Data::new(graphql_schema);
+    let graphql_schema = Data::new(create_schema_with_context(db_pool));
 
     // Capture the connection from the surrounding environment
     let server = HttpServer::new(move || {
@@ -107,7 +109,7 @@ fn run(
                     .guard(guard::Get())
                     .to(sw_graphql_playground),
             )
-            .app_data(db_pool.clone())
+            //.app_data(db_pool.clone())
             .app_data(base_url.clone())
             .app_data(graphql_schema.clone())
     })
