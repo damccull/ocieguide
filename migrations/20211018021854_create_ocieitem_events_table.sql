@@ -1,7 +1,10 @@
-CREATE TABLE ocieitem_events(
+CREATE TABLE ocieitems(
     id uuid NOT NULL,
     PRIMARY KEY (id),
-    stream_id uuid NOT NULL,
-    event_data TEXT NOT NULL,
-    occurred_at timestamptz NOT NULL
+    nsn TEXT,
+    lin TEXT,
+    nomenclature TEXT,
+    size TEXT,
+    unit_of_issue TEXT,
+    price DECIMAL
 );
