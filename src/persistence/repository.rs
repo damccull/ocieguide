@@ -7,7 +7,7 @@ use crate::persistence::model::{LineItemNumber, NationalStockNumber};
 #[tracing::instrument(name = "Get all OcieItems", skip(conn))]
 pub async fn get_all(
     conn: &PgPool,
-) -> Result<Vec<Result<OcieItemEntity, anyhow::Error>>, anyhow::Error> {
+) -> Result<Vec<Result<OcieItemEntity, RepositoryError>>, anyhow::Error> {
     let result = sqlx::query!(
         r#"SELECT id, nsn, lin, nomenclature, size, unit_of_issue, price
         FROM ocieitems"#
@@ -16,14 +16,8 @@ pub async fn get_all(
     .await?
     .into_iter()
     .map(|row| {
-        let nsn = match NationalStockNumber::parse(row.nsn) {
-            Ok(nsn) => nsn,
-            Err(e) => return Err(anyhow::anyhow!(e)),
-        };
-        let lin = match LineItemNumber::parse(row.lin) {
-            Ok(lin) => lin,
-            Err(e) => return Err(anyhow::anyhow!(e)),
-        };
+        let nsn = NationalStockNumber::parse(row.nsn).map_err(RepositoryError::UnexpectedError)?;
+        let lin = LineItemNumber::parse(row.lin).map_err(RepositoryError::UnexpectedError)?;
         Ok(OcieItemEntity {
             id: row.id,
             nsn,
