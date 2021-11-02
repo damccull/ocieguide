@@ -1,13 +1,13 @@
-use std::sync::Arc;
+use std::{str::FromStr, sync::Arc};
 
-use async_graphql::{Context, EmptyMutation, EmptySubscription, Object, Schema};
-use regex::Regex;
+use async_graphql::{Context, EmptyMutation, EmptySubscription, ID, InputValueError, InputValueResult, Object, Scalar, ScalarType, Schema, Value};
+use bigdecimal::BigDecimal;
 use serde::{Deserialize, Serialize};
-use sqlx::{PgConnection, PgPool};
+use sqlx::PgPool;
 use uuid::Uuid;
 
 use crate::persistence::{
-    model::{LineItemNumber, NationalStockNumber},
+    model::{LineItemNumber, NationalStockNumber, OcieItem},
     repository,
 };
 
@@ -17,25 +17,25 @@ pub struct Query;
 
 #[Object]
 impl Query {
-    async fn get_items(&self, ctx: &Context<'_>) -> Vec<OcieItem> {
+    async fn get_items(&self, ctx: &Context<'_>) -> Vec<OcieItemApi> {
         repository::get_all(&get_conn_from_ctx(ctx))
             .await
             .expect("Can't get OCIE items")
             .iter()
-            .map()
+            .map(|i| OcieItemApi::from(i))
             .collect()
     }
 
-    async fn get_item(&self, ctx: &Context<'_>, id: ID) -> Option<OcieItem> {
-        find_ocieitem_by_id_internal(ctx, id)
-    }
+    // async fn get_item(&self, ctx: &Context<'_>, id: ID) -> Option<OcieItemApi> {
+    //     find_ocieitem_by_id_internal(ctx, id)
+    // }
 
-    async fn find_item_by_id(&self, ctx: &Context<'_>, id: ID) -> Option<OcieItem> {
-        find_ocieitem_by_id_internal(ctx, id)
-    }
+    // async fn find_item_by_id(&self, ctx: &Context<'_>, id: ID) -> Option<OcieItemApi> {
+    //     find_ocieitem_by_id_internal(ctx, id)
+    // }
 }
 
-fn find_ocieitem_by_id_internal(ctx: &Context<'_>, id: ID) -> Option<OcieItem> {
+fn find_ocieitem_by_id_internal(ctx: &Context<'_>, id: ID) -> Option<OcieItemApi> {
     let id = id
         .to_string()
         .parse::<i32>()
@@ -43,7 +43,7 @@ fn find_ocieitem_by_id_internal(ctx: &Context<'_>, id: ID) -> Option<OcieItem> {
 
     repository::get(id, &get_conn_from_ctx(ctx))
         .ok()
-        .map(|i| OcieItem::from(&i))
+        .map(|i| OcieItemApi::from(&i))
 }
 
 pub fn get_conn_from_ctx<'a>(ctx: &Context<'a>) -> &'a PgPool {
@@ -71,26 +71,28 @@ pub struct Mutation;
 pub struct Subscription;
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct OcieItem {
+pub struct OcieItemApi {
     id: Uuid,
     nsn: NationalStockNumber,
     lin: LineItemNumber,
     nomenclature: String,
     size: Option<String>,
     unit_of_issue: Option<String>,
-    price: Option<f32>,
+    price: Option<CustomBigDecimal>,
 }
-impl OcieItem {
+
+#[Object]
+impl OcieItemApi {
     async fn id(&self) -> &ID {
-        &self.id
+        &self.id.into()
     }
 
-    async fn nsn(&self) -> &NationalStockNumber {
-        &self.nsn
+    async fn nsn(&self) -> &String {
+        &self.nsn.as_ref().to_string()
     }
 
-    async fn lin(&self) -> &LineItemNumber {
-        &self.lin
+    async fn lin(&self) -> &String {
+        &self.lin.as_ref().to_string()
     }
 
     async fn nomenclature(&self) -> &String {
@@ -105,8 +107,21 @@ impl OcieItem {
         &self.unit_of_issue
     }
 
-    async fn price(&self) -> &Option<f32> {
+    async fn price(&self) -> &Option<CustomBigDecimal> {
         &self.price
+    }
+}
+impl From<&OcieItem> for OcieItemApi {
+    fn from(i: &OcieItem) -> Self {
+        Self {
+            id: i.id,
+            nsn: i.nsn,
+            lin: i.lin,
+            nomenclature: i.nomenclature,
+            size: i.size,
+            unit_of_issue: i.unit_of_issue,
+            price: CustomBigDecimal::parse(i.price.unwrap().to_string()).ok(),
+        }
     }
 }
 // impl Default for OcieItem {
@@ -122,3 +137,23 @@ impl OcieItem {
 //         }
 //     }
 // }
+
+#[derive(Clone)]
+pub struct CustomBigDecimal(BigDecimal);
+
+#[Scalar(name = "BigDecimal")]
+impl ScalarType for CustomBigDecimal {
+    fn parse(value: Value) -> InputValueResult<Self> {
+        match value {
+            Value::String(s) => {
+                let parsed_value = BigDecimal::from_str(&s)?;
+                Ok(CustomBigDecimal(parsed_value))
+            }
+            _ => Err(InputValueError::expected_type(value)),
+        }
+    }
+
+    fn to_value(&self) -> Value {
+        Value::String(self.0.to_string())
+    }
+}
