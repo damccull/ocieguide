@@ -485,6 +485,7 @@ dependencies = [
  "num-bigint",
  "num-integer",
  "num-traits 0.2.14",
+ "serde 1.0.130",
 ]
 
 [[package]]
@@ -1654,6 +1655,7 @@ dependencies = [
  "anyhow",
  "async-graphql",
  "async-graphql-actix-web",
+ "bigdecimal",
  "chrono",
  "claim",
  "config 0.11.0",

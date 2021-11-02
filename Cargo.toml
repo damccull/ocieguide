@@ -18,6 +18,7 @@ actix-cors = "0.6.0-beta.2"
 actix-http = "3.0.0-beta.11"
 async-graphql = { git = "https://github.com/async-graphql/async-graphql.git", branch = "actix-web-v4-beta" }
 async-graphql-actix-web = { git = "https://github.com/async-graphql/async-graphql.git", branch = "actix-web-v4-beta" }
+bigdecimal = { version = "0.2", features = ["serde"] }
 chrono = { version = "0.4", default-features = false, features = [
     "alloc",
     "clock",
