@@ -5,7 +5,7 @@ use uuid::Uuid;
 pub struct OcieItemEntity {
     id: Uuid,
     pub(crate) nsn: Option<NationalStockNumber>,
-    lin: Option<LineItemNumber>,
+    pub(crate) lin: Option<LineItemNumber>,
     nomenclature: Option<String>,
     size: Option<String>,
     unit_of_issue: Option<String>,
