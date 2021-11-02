@@ -73,9 +73,9 @@ pub struct Subscription;
 #[derive(Debug, Serialize, Deserialize)]
 pub struct OcieItem {
     id: Uuid,
-    nsn: Option<NationalStockNumber>,
-    lin: Option<LineItemNumber>,
-    nomenclature: Option<String>,
+    nsn: NationalStockNumber,
+    lin: LineItemNumber,
+    nomenclature: String,
     size: Option<String>,
     unit_of_issue: Option<String>,
     price: Option<f32>,
@@ -85,15 +85,15 @@ impl OcieItem {
         &self.id
     }
 
-    async fn nsn(&self) -> &Option<NationalStockNumber> {
+    async fn nsn(&self) -> &NationalStockNumber {
         &self.nsn
     }
 
-    async fn lin(&self) -> &Option<LineItemNumber> {
+    async fn lin(&self) -> &LineItemNumber {
         &self.lin
     }
 
-    async fn nomenclature(&self) -> &Option<String> {
+    async fn nomenclature(&self) -> &String {
         &self.nomenclature
     }
 
@@ -115,7 +115,7 @@ impl Default for OcieItem {
             id: Uuid::new_v4(),
             nsn: None,
             lin: None,
-            nomenclature: None,
+            nomenclature: "".to_owned(),
             size: None,
             unit_of_issue: None,
             price: None,
