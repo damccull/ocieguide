@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 use sqlx::{PgConnection, PgPool};
 use uuid::Uuid;
 
-use crate::persistence::repository;
+use crate::persistence::{model::{LineItemNumber, NationalStockNumber}, repository};
 
 pub type OcieGuideSchema = Schema<Query, EmptyMutation, EmptySubscription>;
 
