@@ -31,7 +31,7 @@ pub async fn get_all(conn: &PgPool) -> Result<Vec<OcieItemEntity>, anyhow::Error
     Ok(result)
 }
 
-pub fn get(id: i32, conn: &PgConnection) -> Result<OcieItemEntity, sqlx::Error> {
+pub fn get(id: i32, conn: &PgPool) -> Result<OcieItemEntity, sqlx::Error> {
     //TODO: Run SQLX query to pull OcieItem
     todo!()
 }
