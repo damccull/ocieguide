@@ -1,10 +1,13 @@
 use sqlx::PgPool;
 
+use super::model::OcieItemEntity;
+use crate::error_handling::error_chain_fmt;
 use crate::persistence::model::{LineItemNumber, NationalStockNumber};
 
-use super::model::OcieItemEntity;
-
-pub async fn get_all(conn: &PgPool) -> Result<Vec<OcieItemEntity>, anyhow::Error> {
+#[tracing::instrument(name = "Get all OcieItems", skip(conn))]
+pub async fn get_all(
+    conn: &PgPool,
+) -> Result<Vec<Result<OcieItemEntity, anyhow::Error>>, anyhow::Error> {
     let result = sqlx::query!(
         r#"SELECT id, nsn, lin, nomenclature, size, unit_of_issue, price
         FROM ocieitems"#
@@ -13,14 +16,18 @@ pub async fn get_all(conn: &PgPool) -> Result<Vec<OcieItemEntity>, anyhow::Error
     .await?
     .into_iter()
     .map(|row| {
-        let nsn = match row.nsn {
-            Some(nsn) => NationalStockNumber::parse(nsn),
-            None => None,
+        let nsn = match NationalStockNumber::parse(row.nsn) {
+            Ok(nsn) => nsn,
+            Err(e) => return Err(anyhow::anyhow!(e)),
+        };
+        let lin = match LineItemNumber::parse(row.lin) {
+            Ok(lin) => lin,
+            Err(e) => return Err(anyhow::anyhow!(e)),
         };
         Ok(OcieItemEntity {
             id: row.id,
             nsn,
-            lin: LineItemNumber::parse(row.lin)?,
+            lin,
             nomenclature: row.nomenclature,
             size: row.size,
             unit_of_issue: row.unit_of_issue,

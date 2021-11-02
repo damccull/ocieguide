@@ -4,9 +4,9 @@ use uuid::Uuid;
 
 pub struct OcieItemEntity {
     id: Uuid,
-    pub(crate) nsn: Option<NationalStockNumber>,
-    pub(crate) lin: Option<LineItemNumber>,
-    nomenclature: Option<String>,
+    pub(crate) nsn: NationalStockNumber,
+    pub(crate) lin: LineItemNumber,
+    nomenclature: String,
     size: Option<String>,
     unit_of_issue: Option<String>,
     price: Option<f32>,
