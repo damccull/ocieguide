@@ -1,3 +1,4 @@
+use bigdecimal::BigDecimal;
 use regex::Regex;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
@@ -9,7 +10,7 @@ pub struct OcieItemEntity {
     nomenclature: String,
     size: Option<String>,
     unit_of_issue: Option<String>,
-    price: Option<f32>,
+    price: Option<BigDecimal>,
 }
 
 
