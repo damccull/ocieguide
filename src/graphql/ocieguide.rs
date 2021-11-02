@@ -109,17 +109,17 @@ impl OcieItem {
         &self.price
     }
 }
-impl Default for OcieItem {
-    fn default() -> Self {
-        Self {
-            id: Uuid::new_v4(),
-            nsn: None,
-            lin: None,
-            nomenclature: "".to_owned(),
-            size: None,
-            unit_of_issue: None,
-            price: None,
-        }
-    }
-}
+// impl Default for OcieItem {
+//     fn default() -> Self {
+//         Self {
+//             id: Uuid::new_v4(),
+//             nsn: None,
+//             lin: None,
+//             nomenclature: "".to_owned(),
+//             size: None,
+//             unit_of_issue: None,
+//             price: None,
+//         }
+//     }
+// }
 
