@@ -3,16 +3,14 @@ use regex::Regex;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-use crate::error_handling::error_chain_fmt;
-
-pub struct OcieItemEntity {
-    id: Uuid,
+pub struct OcieItem {
+    pub(crate) id: Uuid,
     pub(crate) nsn: NationalStockNumber,
     pub(crate) lin: LineItemNumber,
-    nomenclature: String,
-    size: Option<String>,
-    unit_of_issue: Option<String>,
-    price: Option<BigDecimal>,
+    pub(crate) nomenclature: String,
+    pub(crate) size: Option<String>,
+    pub(crate) unit_of_issue: Option<String>,
+    pub(crate) price: Option<BigDecimal>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
