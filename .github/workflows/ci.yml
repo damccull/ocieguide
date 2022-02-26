@@ -5,6 +5,8 @@ on: [push, pull_request]
 env:
   CARGO_TERM_COLOR: always
   SQLX_VERSION: 0.5.11
+  SQLX_FEATURES: postgres runtime-tokio-rustls
+
 
 jobs:
   test:
@@ -19,8 +21,6 @@ jobs:
           POSTGRES_DB: postgres
         ports:
           - 5432:5432
-    env:
-      SQLX_FEATURES: postgres
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
@@ -105,8 +105,6 @@ jobs:
           POSTGRES_DB: postgres
         ports:
           - 5432:5432
-    env:
-      SQLX_FEATURES: postgres
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -172,8 +170,6 @@ jobs:
           POSTGRES_DB: postgres
         ports:
           - 5432:5432
-    env:
-      SQLX_FEATURES: postgres
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
