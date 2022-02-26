@@ -13,13 +13,11 @@ use tracing_actix_web::TracingLogger;
 
 use crate::{
     configuration::{DatabaseSettings, Settings},
-    graphql::{
-        ocieguide::create_schema_with_context,
-        starwars_model::QueryRoot,
-        starwars_schema::{StarWars, StarWarsSchema},
-    },
-    routes::{graphql, graphql_playground, health_check, sw_graphql, sw_graphql_playground},
+    graphql::ocieguide::create_schema_with_context,
+    routes::{graphql_playground, health_check, sw_graphql_playground},
 };
+// use crate::routes::graphql;
+// use crate::routes::sw_graphql;
 
 pub struct Application {
     port: u16,
@@ -44,9 +42,9 @@ impl Application {
         // can use random ports
         let port = listener.local_addr().unwrap().port();
 
-        let graphql_schema = StarWarsSchema::build(QueryRoot, EmptyMutation, EmptySubscription)
-            .data(StarWars::new())
-            .finish();
+        // let graphql_schema = StarWarsSchema::build(QueryRoot, EmptyMutation, EmptySubscription)
+        //     .data(StarWars::new())
+        //     .finish();
 
         let server = run(
             listener,
@@ -93,17 +91,17 @@ fn run(
             )
             .wrap(TracingLogger::default())
             .route("/health_check", web::get().to(health_check))
-            .service(web::resource("/graphql").guard(guard::Post()).to(graphql))
+            // .service(web::resource("/graphql").guard(guard::Post()).to(graphql))
             .service(
                 web::resource("/graphql_playground")
                     .guard(guard::Get())
                     .to(graphql_playground),
             )
-            .service(
-                web::resource("/sw_graphql")
-                    .guard(guard::Post())
-                    .to(sw_graphql),
-            )
+            // .service(
+            //     web::resource("/sw_graphql")
+            //         .guard(guard::Post())
+            //         .to(sw_graphql),
+            // )
             .service(
                 web::resource("/sw_graphql_playground")
                     .guard(guard::Get())
