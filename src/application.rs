@@ -10,13 +10,15 @@ use actix_web::{
 use sqlx::{postgres::PgPoolOptions, PgPool};
 use tracing_actix_web::TracingLogger;
 
-use crate::{
-    configuration::{DatabaseSettings, Settings},
-    graphql::{ocieguide::create_schema_with_context, starwars_schema::create_sw_schema_with_context},
-    routes::{graphql_playground, health_check, sw_graphql_playground},
-};
 use crate::routes::graphql;
 use crate::routes::sw_graphql;
+use crate::{
+    configuration::{DatabaseSettings, Settings},
+    graphql::{
+        ocieguide::create_schema_with_context, starwars_schema::create_sw_schema_with_context,
+    },
+    routes::{graphql_playground, health_check, sw_graphql_playground},
+};
 
 pub struct Application {
     port: u16,
@@ -111,7 +113,6 @@ fn run(
             .app_data(base_url.clone())
             .app_data(graphql_schema.clone())
             .app_data(graphql_sw_schema.clone())
-
     })
     .listen(listener)?
     .run();
