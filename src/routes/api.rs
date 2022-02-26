@@ -1,7 +1,7 @@
 use actix_web::Result;
 use actix_web::{web, HttpResponse};
 use async_graphql::http::{playground_source, GraphQLPlaygroundConfig};
-use async_graphql_actix_web::{Request, Response};
+use async_graphql::{Request, Response};
 
 use crate::graphql::starwars_schema::StarWarsSchema;
 
