@@ -4,8 +4,8 @@ use async_graphql::{
     Context, EmptyMutation, EmptySubscription, InputValueError, InputValueResult, Object, Scalar,
     ScalarType, Schema, Value, ID,
 };
-use bigdecimal::BigDecimal;
 use serde::{Deserialize, Serialize};
+use sqlx::types::BigDecimal;
 use sqlx::PgPool;
 use uuid::Uuid;
 
@@ -86,44 +86,47 @@ pub struct OcieItemApi {
 
 #[Object]
 impl OcieItemApi {
-    async fn id(&self) -> &ID {
-        &self.id.into()
+    async fn id(&self) -> ID {
+        self.id.into()
     }
 
-    async fn nsn(&self) -> &String {
-        &self.nsn.as_ref().to_string()
+    async fn nsn(&self) -> String {
+        self.nsn.as_ref().to_string()
     }
 
-    async fn lin(&self) -> &String {
-        &self.lin.as_ref().to_string()
+    async fn lin(&self) -> String {
+        self.lin.as_ref().to_string()
     }
 
-    async fn nomenclature(&self) -> &String {
-        &self.nomenclature
+    async fn nomenclature(&self) -> String {
+        self.nomenclature.clone()
     }
 
-    async fn size(&self) -> &Option<String> {
-        &self.size
+    async fn size(&self) -> Option<String> {
+        self.size.clone()
     }
 
-    async fn unit_of_issue(&self) -> &Option<String> {
-        &self.unit_of_issue
+    async fn unit_of_issue(&self) -> Option<String> {
+        self.unit_of_issue.clone()
     }
 
-    async fn price(&self) -> &Option<CustomBigDecimal> {
-        &self.price
+    async fn price(&self) -> Option<CustomBigDecimal> {
+        self.price.clone()
     }
 }
 impl From<&OcieItem> for OcieItemApi {
     fn from(i: &OcieItem) -> Self {
         Self {
             id: i.id,
-            nsn: i.nsn,
-            lin: i.lin,
-            nomenclature: i.nomenclature,
-            size: i.size,
-            unit_of_issue: i.unit_of_issue,
-            price: CustomBigDecimal::parse(i.price.unwrap().to_string()).ok(),
+            nsn: i.nsn.clone(),
+            lin: i.lin.clone(),
+            nomenclature: i.nomenclature.clone(),
+            size: i.size.clone(),
+            unit_of_issue: i.unit_of_issue.clone(),
+            price: CustomBigDecimal::parse(async_graphql::Value::String(
+                i.price.clone().unwrap().to_string(),
+            ))
+            .ok(),
         }
     }
 }
@@ -141,7 +144,7 @@ impl From<&OcieItem> for OcieItemApi {
 //     }
 // }
 
-#[derive(Clone)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct CustomBigDecimal(BigDecimal);
 
 #[Scalar(name = "BigDecimal")]

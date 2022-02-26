@@ -1,6 +1,6 @@
-use bigdecimal::BigDecimal;
 use regex::Regex;
 use serde::{Deserialize, Serialize};
+use sqlx::types::BigDecimal;
 use uuid::Uuid;
 
 pub struct OcieItem {
