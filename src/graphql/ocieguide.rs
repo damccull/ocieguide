@@ -14,8 +14,6 @@ use crate::persistence::{
     repository,
 };
 
-use super::starwars_schema::StarWarsSchema;
-
 pub type OcieGuideSchema = Schema<Query, EmptyMutation, EmptySubscription>;
 
 pub struct Query;
@@ -23,11 +21,11 @@ pub struct Query;
 #[Object]
 impl Query {
     async fn get_items(&self, ctx: &Context<'_>) -> Vec<OcieItemApi> {
-        repository::get_all(&get_conn_from_ctx(ctx))
+        repository::get_all(get_conn_from_ctx(ctx))
             .await
             .expect("Can't get OCIE items")
             .iter()
-            .map(|i| OcieItemApi::from(i))
+            .map(OcieItemApi::from)
             .collect()
     }
 
@@ -40,13 +38,13 @@ impl Query {
     // }
 }
 
-fn find_ocieitem_by_id_internal(ctx: &Context<'_>, id: ID) -> Option<OcieItemApi> {
+fn _find_ocieitem_by_id_internal(ctx: &Context<'_>, id: ID) -> Option<OcieItemApi> {
     let id = id
         .to_string()
         .parse::<i32>()
         .expect("Can't get id from String");
 
-    repository::get(id, &get_conn_from_ctx(ctx))
+    repository::get(id, get_conn_from_ctx(ctx))
         .ok()
         .map(|i| OcieItemApi::from(&i))
 }
@@ -58,7 +56,7 @@ pub fn get_conn_from_ctx<'a>(ctx: &Context<'a>) -> &'a PgPool {
 
 pub fn create_schema_with_context(pool: PgPool) -> OcieGuideSchema {
     let arc_pool = Arc::new(pool);
-    let cloned_pool = Arc::clone(&arc_pool);
+    // let cloned_pool = Arc::clone(&arc_pool);
     // let details_data_loader =
     //     DataLoader::new(DetailsLoader { pool: cloned_pool }).max_batch_size(10);
 

@@ -1,8 +1,7 @@
-use std::{collections::HashMap, sync::Arc};
+use std::collections::HashMap;
 
 use async_graphql::{EmptyMutation, EmptySubscription, Schema};
 use slab::Slab;
-use sqlx::PgPool;
 
 use super::starwars_model::{Episode, QueryRoot};
 
