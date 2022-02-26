@@ -6,6 +6,7 @@
 
 use std::convert::{TryFrom, TryInto};
 
+use config::Config;
 use serde_aux::field_attributes::deserialize_number_from_string;
 use sqlx::{
     postgres::{PgConnectOptions, PgSslMode},
@@ -16,17 +17,14 @@ use tracing::log::LevelFilter;
 /// Initializes the server's settings from configuration files and environment variables
 /// and returns a [`Settings`] struct.
 pub fn get_configuration() -> Result<Settings, config::ConfigError> {
-    // Initialize the configuration reader
-    let mut settings = config::Config::default();
-
     // Get the application's base path
     let base_path = std::env::current_dir().expect("Failed to determine the current directory.");
 
     // Join the configuration directory to the app's base path
     let configuration_directory = base_path.join("configuration");
 
-    // Read the base configuration file
-    settings.merge(config::File::from(configuration_directory.join("base")).required(true))?;
+    let mut builder = Config::builder()
+        .add_source(config::File::from(configuration_directory.join("base")).required(true));
 
     // Detect the running environment; default to 'local' if unspecified
     let environment: Environment = std::env::var("APP_ENVIRONMENT")
@@ -34,17 +32,16 @@ pub fn get_configuration() -> Result<Settings, config::ConfigError> {
         .try_into()
         .expect("Failed to parse APP_ENVIRONMENT");
 
-    // Layer the environment-specific config over the base
-    settings.merge(
+    builder.add_source(
         config::File::from(configuration_directory.join(environment.as_str())).required(true),
-    )?;
+    );
 
     // Layer on any settings from environment variables
     // Environment variables prefixed with 'APP' and using '__' as a separator
     // E.g. 'APP_APPLICATION__PORT=5001' will set 'Settings.application.port' to 5001
-    settings.merge(config::Environment::with_prefix("app").separator("__"))?;
+    builder.add_source(config::Environment::with_prefix("app").separator("__"));
 
-    settings.try_into()
+    builder.build()?.try_deserialize()
 }
 
 /// The root settings struct.
