@@ -1,12 +1,12 @@
 use actix_web::Result;
 use actix_web::{web, HttpResponse};
 use async_graphql::http::{playground_source, GraphQLPlaygroundConfig};
-use async_graphql::{Request, Response};
+use async_graphql_actix_web::{GraphQLRequest, GraphQLResponse};
 
 use crate::graphql::starwars_schema::StarWarsSchema;
 
 #[tracing::instrument(name = "GraphQL Request", skip(schema, req))]
-pub async fn graphql(schema: web::Data<StarWarsSchema>, req: Request) -> Response {
+pub async fn graphql(schema: web::Data<StarWarsSchema>, req: GraphQLRequest) -> GraphQLResponse {
     schema.execute(req.into_inner()).await.into()
 }
 
@@ -21,7 +21,7 @@ pub async fn graphql_playground() -> Result<HttpResponse> {
 }
 
 #[tracing::instrument(name = "Star Wars GraphQL Request", skip(schema, req))]
-pub async fn sw_graphql(schema: web::Data<StarWarsSchema>, req: Request) -> Response {
+pub async fn sw_graphql(schema: web::Data<StarWarsSchema>, req: GraphQLRequest) -> GraphQLResponse {
     schema.execute(req.into_inner()).await.into()
 }
 
