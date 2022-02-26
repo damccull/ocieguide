@@ -23,6 +23,8 @@ pub fn get_configuration() -> Result<Settings, config::ConfigError> {
     // Join the configuration directory to the app's base path
     let configuration_directory = base_path.join("configuration");
 
+    // Instantiate a builder and set the base settings file
+    // TODO: Consider whether to set these base options using hard-coded defaults or not
     let mut builder = Config::builder()
         .add_source(config::File::from(configuration_directory.join("base")).required(true));
 
