@@ -1,6 +1,9 @@
 use std::{str::FromStr, sync::Arc};
 
-use async_graphql::{Context, EmptyMutation, EmptySubscription, ID, InputValueError, InputValueResult, Object, Scalar, ScalarType, Schema, Value};
+use async_graphql::{
+    Context, EmptyMutation, EmptySubscription, InputValueError, InputValueResult, Object, Scalar,
+    ScalarType, Schema, Value, ID,
+};
 use bigdecimal::BigDecimal;
 use serde::{Deserialize, Serialize};
 use sqlx::PgPool;
