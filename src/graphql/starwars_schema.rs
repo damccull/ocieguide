@@ -1,11 +1,21 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, sync::Arc};
 
 use async_graphql::{EmptyMutation, EmptySubscription, Schema};
 use slab::Slab;
+use sqlx::PgPool;
 
 use super::starwars_model::{Episode, QueryRoot};
 
 pub type StarWarsSchema = Schema<QueryRoot, EmptyMutation, EmptySubscription>;
+
+pub fn create_sw_schema_with_context() -> StarWarsSchema {
+    Schema::build(QueryRoot, EmptyMutation, EmptySubscription)
+        // limits are commented out, because otherwise introspection query won't work
+        // .limit_depth(3)
+        // .limit_complexity(15)
+        .data(StarWars::new())
+        .finish()
+}
 
 pub struct StarWarsChar {
     pub id: &'static str,
