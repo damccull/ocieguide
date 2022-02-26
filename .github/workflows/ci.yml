@@ -5,7 +5,7 @@ on: [push, pull_request]
 env:
   CARGO_TERM_COLOR: always
   SQLX_VERSION: 0.5.11
-  SQLX_FEATURES: postgres,rustls
+  SQLX_FEATURES: "postgres rustls"
 
 
 jobs:
