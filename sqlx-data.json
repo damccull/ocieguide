@@ -1,3 +1,57 @@
 {
-  "db": "PostgreSQL"
+  "db": "PostgreSQL",
+  "2a15c78de7effe660a4800126ea4e8501cc832976b6640d949af1ad6f5652837": {
+    "query": "SELECT id, nsn, lin, nomenclature, size, unit_of_issue, price\n        FROM ocieitems",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "id",
+          "type_info": "Uuid"
+        },
+        {
+          "ordinal": 1,
+          "name": "nsn",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 2,
+          "name": "lin",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 3,
+          "name": "nomenclature",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 4,
+          "name": "size",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 5,
+          "name": "unit_of_issue",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 6,
+          "name": "price",
+          "type_info": "Numeric"
+        }
+      ],
+      "parameters": {
+        "Left": []
+      },
+      "nullable": [
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true
+      ]
+    }
+  }
 }
