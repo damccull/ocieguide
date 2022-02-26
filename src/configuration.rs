@@ -32,14 +32,14 @@ pub fn get_configuration() -> Result<Settings, config::ConfigError> {
         .try_into()
         .expect("Failed to parse APP_ENVIRONMENT");
 
-    builder.add_source(
+    builder = builder.add_source(
         config::File::from(configuration_directory.join(environment.as_str())).required(true),
     );
 
     // Layer on any settings from environment variables
     // Environment variables prefixed with 'APP' and using '__' as a separator
     // E.g. 'APP_APPLICATION__PORT=5001' will set 'Settings.application.port' to 5001
-    builder.add_source(config::Environment::with_prefix("app").separator("__"));
+    builder = builder.add_source(config::Environment::with_prefix("app").separator("__"));
 
     builder.build()?.try_deserialize()
 }
