@@ -38,23 +38,6 @@ dependencies = [
 
 [[package]]
 name = "actix-codec"
-version = "0.4.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a36c014a3e811624313b51a227b775ecba55d36ef9462bbaac7d4f13e54c9271"
-dependencies = [
- "bitflags",
- "bytes",
- "futures-core",
- "futures-sink",
- "log",
- "memchr",
- "pin-project-lite",
- "tokio",
- "tokio-util 0.6.9",
-]
-
-[[package]]
-name = "actix-codec"
 version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "57a7559404a7f3573127aab53c08ce37a6c6a315c374a31070f3c91cd1b4a7fe"
@@ -88,11 +71,11 @@ dependencies = [
 
 [[package]]
 name = "actix-http"
-version = "3.0.0-rc.3"
+version = "3.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a8b5ba038f3bb4aa29ad9bdd7eba09955ff04503263c497fc61a389d6412f4e8"
+checksum = "0f3fdd63b9cfeaf92eeeece719dabbddddb420a57d3fd171ce1490ecfb7086b1"
 dependencies = [
- "actix-codec 0.5.0",
+ "actix-codec",
  "actix-rt",
  "actix-service",
  "actix-utils",
@@ -199,11 +182,11 @@ dependencies = [
 
 [[package]]
 name = "actix-web"
-version = "4.0.0-rc.3"
+version = "4.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "83e3c85bc4116b69913b03f16cff8cade1212508fcd321847d9cfe3d3e41f991"
+checksum = "f4e5ebffd51d50df56a3ae0de0e59487340ca456f05dd0b90c0a7a6dd6a74d31"
 dependencies = [
- "actix-codec 0.4.2",
+ "actix-codec",
  "actix-http",
  "actix-macros",
  "actix-router",
@@ -214,6 +197,7 @@ dependencies = [
  "actix-web-codegen",
  "ahash 0.7.6",
  "bytes",
+ "bytestring",
  "cfg-if",
  "cookie",
  "derive_more",
@@ -243,7 +227,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "95319210d3670dcdc918e670c076bd77f0b8ee557d84c157d8c408796bcd5eb9"
 dependencies = [
  "actix",
- "actix-codec 0.5.0",
+ "actix-codec",
  "actix-http",
  "actix-web",
  "bytes",
@@ -255,9 +239,9 @@ dependencies = [
 
 [[package]]
 name = "actix-web-codegen"
-version = "0.5.0-rc.2"
+version = "4.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4d0976042e6ddc82c7d0dedd64d39959bc26d9bba098b2f6c32a73fbef784eaf"
+checksum = "7525bedf54704abb1d469e88d7e7e9226df73778798a69cea5022d53b2ae91bc"
 dependencies = [
  "actix-router",
  "proc-macro2",
@@ -345,6 +329,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "23b62fc65de8e4e7f52534fb52b0f3ed04746ae267519eef2a83941e8085068b"
 
 [[package]]
+name = "arrayvec"
+version = "0.7.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8da52d66c7071e2e3fa2a1e5c6d088fec47b593032b254f5e980de8ea54454d6"
+
+[[package]]
 name = "ascii_utils"
 version = "0.9.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -393,11 +383,14 @@ dependencies = [
  "once_cell",
  "pin-project-lite",
  "regex",
+ "rust_decimal",
  "serde",
  "serde_json",
  "static_assertions",
  "tempfile",
  "thiserror",
+ "tracing",
+ "tracing-futures",
 ]
 
 [[package]]
@@ -515,18 +508,7 @@ version = "0.2.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d1e50562e37200edf7c6c43e54a08e64a5553bfb59d9c297d5572512aa517256"
 dependencies = [
- "num-bigint 0.3.3",
- "num-integer",
- "num-traits",
-]
-
-[[package]]
-name = "bigdecimal"
-version = "0.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6aaf33151a6429fe9211d1b276eafdf70cdff28b071e76c0b0e1503221ea3744"
-dependencies = [
- "num-bigint 0.4.3",
+ "num-bigint",
  "num-integer",
  "num-traits",
  "serde",
@@ -1496,7 +1478,7 @@ version = "0.7.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6607c62aa161d23d17a9072cc5da0be67cdfc89d3afb1e8d9c842bebc2525ffe"
 dependencies = [
- "arrayvec",
+ "arrayvec 0.5.2",
  "bitflags",
  "cfg-if",
  "ryu",
@@ -1703,17 +1685,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "num-bigint"
-version = "0.4.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f93ab6289c7b344a8a9f60f88d80aa20032336fe78da341afc91c8a2341fc75f"
-dependencies = [
- "autocfg",
- "num-integer",
- "num-traits",
-]
-
-[[package]]
 name = "num-integer"
 version = "0.1.44"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1762,7 +1733,7 @@ dependencies = [
  "anyhow",
  "async-graphql",
  "async-graphql-actix-web",
- "bigdecimal 0.3.0",
+ "bigdecimal",
  "chrono",
  "claim",
  "config 0.12.0",
@@ -2222,6 +2193,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "rust_decimal"
+version = "1.22.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d37baa70cf8662d2ba1c1868c5983dda16ef32b105cce41fb5c47e72936a90b3"
+dependencies = [
+ "arrayvec 0.7.2",
+ "num-traits",
+ "serde",
+]
+
+[[package]]
 name = "rustc_version"
 version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2498,7 +2480,7 @@ dependencies = [
  "ahash 0.7.6",
  "atoi",
  "base64",
- "bigdecimal 0.2.2",
+ "bigdecimal",
  "bitflags",
  "byteorder",
  "bytes",
@@ -2520,7 +2502,7 @@ dependencies = [
  "log",
  "md-5",
  "memchr",
- "num-bigint 0.3.3",
+ "num-bigint",
  "once_cell",
  "paste",
  "percent-encoding",
@@ -2814,9 +2796,9 @@ dependencies = [
 
 [[package]]
 name = "tracing-actix-web"
-version = "0.5.0-rc.3"
+version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c7890da8dde042f5248aeab89e3de570039ad5ecc9dbe492bf3222355e102086"
+checksum = "245a559f6fafd06e8f4cf7731c408a78623585a737467927b54c1c9813db3774"
 dependencies = [
  "actix-web",
  "pin-project",
@@ -2869,6 +2851,8 @@ version = "0.2.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "97d095ae15e245a057c8e8451bab9b3ee1e1f68e9ba2b4fbc18d0ac5237835f2"
 dependencies = [
+ "futures",
+ "futures-task",
  "pin-project",
  "tracing",
 ]
