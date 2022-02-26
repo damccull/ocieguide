@@ -71,8 +71,6 @@ pub fn create_schema_with_context(pool: PgPool) -> OcieGuideSchema {
         .finish()
 }
 
-
-
 pub struct Mutation;
 
 pub struct Subscription;
