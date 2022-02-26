@@ -14,6 +14,8 @@ use crate::persistence::{
     repository,
 };
 
+use super::starwars_schema::StarWarsSchema;
+
 pub type OcieGuideSchema = Schema<Query, EmptyMutation, EmptySubscription>;
 
 pub struct Query;
@@ -68,6 +70,8 @@ pub fn create_schema_with_context(pool: PgPool) -> OcieGuideSchema {
         // .data(details_data_loader)
         .finish()
 }
+
+
 
 pub struct Mutation;
 

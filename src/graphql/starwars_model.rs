@@ -219,7 +219,7 @@ async fn query_characters(
                     .map(|(idx, item)| Edge::new(start + idx, *item)),
             );
 
-            Ok(connection)
+            Ok::<_, async_graphql::Error>(connection)
         },
     )
     .await
