@@ -14,12 +14,15 @@ name = "ocieguide"
 [dependencies]
 anyhow = "~1.0.0"
 #actix-web = "~4.0.1"
-actix-web = "=4.0.0-rc.3"
+actix-web = "4.0.0"
 actix-cors = "~0.6.0-beta.10"
-actix-http = "=3.0.0-rc.3"
-async-graphql = { git = "https://github.com/async-graphql/async-graphql.git", branch = "master" }
+actix-http = "3.0.0"
+async-graphql = { git = "https://github.com/async-graphql/async-graphql.git", branch = "master", features = [
+    "decimal",
+    "tracing",
+] }
 async-graphql-actix-web = { git = "https://github.com/async-graphql/async-graphql.git", branch = "master" }
-bigdecimal = { version = "~0.3.0", features = ["serde"] }
+bigdecimal = { version = "~0.2.2", features = ["serde"] }
 chrono = { version = "~0.4.19", default-features = false, features = [
     "alloc",
     "clock",
@@ -48,7 +51,7 @@ sqlx = { version = "0.5.11", default-features = false, features = [
 ] }
 thiserror = "~1.0.30"
 tracing = { version = "~0.1.31", features = ["log"] }
-tracing-actix-web = "=0.5.0-rc.3"
+tracing-actix-web = "~0.5.0"
 tracing-bunyan-formatter = "~0.3.2"
 tracing-futures = "~0.2.5"
 tracing-log = "~0.1.2"
