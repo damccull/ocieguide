@@ -1,6 +1,7 @@
 pub mod application;
 pub mod configuration;
 pub mod graphql;
+pub mod swgraphql;
 // pub mod models;
 pub mod error_handling;
 pub mod persistence;
