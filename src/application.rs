@@ -16,8 +16,8 @@ use crate::{
     configuration::{DatabaseSettings, Settings},
     //graphql::ocieguide::create_schema_with_context,
     graphql::build_schema,
-    swgraphql::starwars_schema::create_sw_schema_with_context,
     routes::{graphql_playground, health_check, sw_graphql_playground},
+    swgraphql::starwars_schema::create_sw_schema_with_context,
 };
 
 pub struct Application {
