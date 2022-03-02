@@ -69,7 +69,7 @@ impl Application {
 
 fn run(
     listener: TcpListener,
-    db_pool: PgPool,
+    _db_pool: PgPool,
     // graphql_schema: StarWarsSchema,
     base_url: String,
 ) -> Result<Server, std::io::Error> {
