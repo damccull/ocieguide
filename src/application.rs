@@ -14,9 +14,8 @@ use crate::routes::graphql;
 use crate::routes::sw_graphql;
 use crate::{
     configuration::{DatabaseSettings, Settings},
-    graphql::{
-        ocieguide::create_schema_with_context, 
-    },
+    //graphql::ocieguide::create_schema_with_context,
+    graphql::build_schema,
     swgraphql::starwars_schema::create_sw_schema_with_context,
     routes::{graphql_playground, health_check, sw_graphql_playground},
 };
@@ -77,8 +76,8 @@ fn run(
     // Wrap shared things in smart pointers
     // let db_pool = Data::new(db_pool);
     let base_url = Data::new(base_url);
-    // let graphql_schema = Data::new(graphql_schema);
-    let graphql_schema = Data::new(create_schema_with_context(db_pool));
+    //let graphql_schema = Data::new(create_schema_with_context(db_pool));
+    let graphql_schema = Data::new(build_schema());
     let graphql_sw_schema = Data::new(create_sw_schema_with_context());
 
     // Capture the connection from the surrounding environment

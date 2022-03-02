@@ -3,7 +3,8 @@ use actix_web::{web, HttpResponse};
 use async_graphql::http::{playground_source, GraphQLPlaygroundConfig};
 use async_graphql_actix_web::{GraphQLRequest, GraphQLResponse};
 
-use crate::graphql::ocieguide::OcieGuideSchema;
+use crate::graphql::OcieGuideSchema;
+//use crate::graphql::ocieguide::OcieGuideSchema;
 use crate::swgraphql::starwars_schema::StarWarsSchema;
 
 #[tracing::instrument(name = "GraphQL Request", skip(schema, req))]
