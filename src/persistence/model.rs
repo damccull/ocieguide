@@ -3,6 +3,8 @@ use serde::{Deserialize, Serialize};
 use sqlx::types::BigDecimal;
 use uuid::Uuid;
 
+//TODO: Remove this dead code allowance
+#[allow(dead_code)]
 pub struct OcieItem {
     pub(crate) id: Uuid,
     pub(crate) nsn: NationalStockNumber,
