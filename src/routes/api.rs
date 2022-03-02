@@ -3,10 +3,11 @@ use actix_web::{web, HttpResponse};
 use async_graphql::http::{playground_source, GraphQLPlaygroundConfig};
 use async_graphql_actix_web::{GraphQLRequest, GraphQLResponse};
 
-use crate::graphql::starwars_schema::StarWarsSchema;
+use crate::graphql::ocieguide::OcieGuideSchema;
+use crate::swgraphql::starwars_schema::StarWarsSchema;
 
 #[tracing::instrument(name = "GraphQL Request", skip(schema, req))]
-pub async fn graphql(schema: web::Data<StarWarsSchema>, req: GraphQLRequest) -> GraphQLResponse {
+pub async fn graphql(schema: web::Data<OcieGuideSchema>, req: GraphQLRequest) -> GraphQLResponse {
     schema.execute(req.into_inner()).await.into()
 }
 

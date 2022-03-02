@@ -15,8 +15,9 @@ use crate::routes::sw_graphql;
 use crate::{
     configuration::{DatabaseSettings, Settings},
     graphql::{
-        ocieguide::create_schema_with_context, starwars_schema::create_sw_schema_with_context,
+        ocieguide::create_schema_with_context, 
     },
+    swgraphql::starwars_schema::create_sw_schema_with_context,
     routes::{graphql_playground, health_check, sw_graphql_playground},
 };
 
