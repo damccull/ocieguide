@@ -41,7 +41,11 @@ pub fn get_configuration() -> Result<Settings, config::ConfigError> {
     // Layer on any settings from environment variables
     // Environment variables prefixed with 'APP' and using '__' as a separator
     // E.g. 'APP_APPLICATION__PORT=5001' will set 'Settings.application.port' to 5001
-    builder = builder.add_source(config::Environment::with_prefix("app").separator("__"));
+    builder = builder.add_source(
+        config::Environment::with_prefix("app")
+            //.prefix_separator("_")
+            .separator("__"),
+    );
 
     builder.build()?.try_deserialize()
 }
