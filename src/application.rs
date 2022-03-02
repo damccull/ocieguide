@@ -1,23 +1,13 @@
 use std::net::TcpListener;
 
 use actix_cors::Cors;
-use actix_web::{
-    dev::Server,
-    guard,
-    web::{self, Data},
-    App, HttpServer,
-};
+use actix_web::{dev::Server, web::Data, App, HttpServer};
 use sqlx::{postgres::PgPoolOptions, PgPool};
 use tracing_actix_web::TracingLogger;
 
-use crate::routes::graphql;
-use crate::routes::sw_graphql;
 use crate::{
     configuration::{DatabaseSettings, Settings},
-    //graphql::ocieguide::create_schema_with_context,
-    graphql::build_schema,
-    routes::{graphql_playground, health_check, sw_graphql_playground},
-    swgraphql::starwars_schema::create_sw_schema_with_context,
+    routes,
 };
 
 pub struct Application {
@@ -76,9 +66,6 @@ fn run(
     // Wrap shared things in smart pointers
     // let db_pool = Data::new(db_pool);
     let base_url = Data::new(base_url);
-    //let graphql_schema = Data::new(create_schema_with_context(db_pool));
-    let graphql_schema = Data::new(build_schema());
-    let graphql_sw_schema = Data::new(create_sw_schema_with_context());
 
     // Capture the connection from the surrounding environment
     let server = HttpServer::new(move || {
@@ -92,27 +79,11 @@ fn run(
                     .max_age(3600),
             )
             .wrap(TracingLogger::default())
-            .route("/health_check", web::get().to(health_check))
-            .service(web::resource("/graphql").guard(guard::Post()).to(graphql))
-            .service(
-                web::resource("/graphql_playground")
-                    .guard(guard::Get())
-                    .to(graphql_playground),
-            )
-            .service(
-                web::resource("/sw_graphql")
-                    .guard(guard::Post())
-                    .to(sw_graphql),
-            )
-            .service(
-                web::resource("/sw_graphql_playground")
-                    .guard(guard::Get())
-                    .to(sw_graphql_playground),
-            )
+            .configure(routes::health_check::configure)
+            .configure(routes::graphql::configure)
+            .configure(routes::sw_graphql::configure)
             //.app_data(db_pool.clone())
             .app_data(base_url.clone())
-            .app_data(graphql_schema.clone())
-            .app_data(graphql_sw_schema.clone())
     })
     .listen(listener)?
     .run();
