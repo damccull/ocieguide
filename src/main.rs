@@ -15,6 +15,9 @@ async fn main() -> std::io::Result<()> {
 
     // Create the application and launch it
     let application = Application::build(configuration).await?;
+    let port = application.port();
+    tracing::info!("Server started on port {port}");
+
     application.run_until_stopped().await?;
     Ok(())
 }
