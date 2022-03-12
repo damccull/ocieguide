@@ -43,7 +43,7 @@ pub fn get_configuration() -> Result<Settings, config::ConfigError> {
     // E.g. 'APP_APPLICATION__PORT=5001' will set 'Settings.application.port' to 5001
     builder = builder.add_source(
         config::Environment::with_prefix("app")
-            //.prefix_separator("_")
+            //.prefix_separator("_") // TODO: Uncomment this when released to fix the prefix separator
             .separator("__"),
     );
 
