@@ -13,8 +13,8 @@ name = "ocieguide"
 
 [dependencies]
 anyhow = "~1.0.0"
-#actix-web = "~4.0.1"
-actix-web = "4.0.0"
+actix-web = "~4.0.1"
+#actix-web = "4.0.0"
 actix-cors = "~0.6.0-beta.10"
 actix-http = "3.0.0"
 async-graphql = { git = "https://github.com/async-graphql/async-graphql.git", branch = "master", features = [
