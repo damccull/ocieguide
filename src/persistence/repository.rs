@@ -1,8 +1,49 @@
+use async_trait::async_trait;
 use sqlx::PgPool;
+use uuid::Uuid;
 
 use super::model::OcieItem;
 use crate::error_handling::error_chain_fmt;
 use crate::persistence::model::{LineItemNumber, NationalStockNumber};
+
+#[async_trait]
+pub trait OcieItemRepository {
+    type Error;
+    type Connection;
+    type RecordIdType;
+    async fn get_all(&self, conn: &Self::Connection) -> Result<Vec<OcieItem>, Self::Error>;
+    async fn get(
+        &self,
+        conn: &Self::Connection,
+        id: Self::RecordIdType,
+    ) -> Result<OcieItem, Self::Error>;
+    async fn add(&self, conn: &Self::Connection) -> Result<OcieItem, Self::Error>;
+}
+
+pub struct PostgresOcieItemRepository;
+#[async_trait]
+impl OcieItemRepository for PostgresOcieItemRepository {
+    type Error = anyhow::Error;
+
+    type Connection = PgPool;
+
+    type RecordIdType = Uuid;
+
+    async fn get_all(&self, conn: &Self::Connection) -> Result<Vec<OcieItem>, Self::Error> {
+        todo!()
+    }
+
+
+    fn get(&self,conn:Self::Connection,id:Self::RecordIdType,) ->  Result<OcieItem, Self::Error> {
+        todo!()
+    }
+
+
+    fn add(&self,conn:Self::Connection) ->  Result<OcieItem, Self::Error> {
+        todo!()
+    }
+
+}
 
 #[tracing::instrument(name = "Get all OcieItems", skip(conn))]
 pub async fn get_all(conn: &PgPool) -> Result<Vec<OcieItem>, anyhow::Error> {
