@@ -80,8 +80,6 @@ fn run(
             )
             .wrap(TracingLogger::default())
             .configure(routes::health_check::configure)
-            .configure(routes::graphql::configure)
-            .configure(routes::sw_graphql::configure)
             //.app_data(db_pool.clone())
             .app_data(base_url.clone())
     })
