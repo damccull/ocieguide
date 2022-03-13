@@ -7,7 +7,7 @@ use tracing_actix_web::TracingLogger;
 
 use crate::{
     configuration::{DatabaseSettings, Settings},
-    routes,
+    api,
 };
 
 pub struct Application {
@@ -79,7 +79,7 @@ fn run(
                     .max_age(3600),
             )
             .wrap(TracingLogger::default())
-            .configure(routes::health_check::configure)
+            .configure(api::health_check::configure)
             //.app_data(db_pool.clone())
             .app_data(base_url.clone())
     })
