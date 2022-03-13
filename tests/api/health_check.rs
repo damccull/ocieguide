@@ -16,15 +16,3 @@ async fn health_check_works() {
     assert!(response.status().is_success());
     assert_eq!(Some(0), response.content_length());
 }
-
-#[actix_rt::test]
-async fn graphql_health_check_works() {
-    // Arrange
-    let test_app = TestApp::spawn().await;
-    
-    //Act
-    //let response = 
-
-    //Assert
-    
-}
