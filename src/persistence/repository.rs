@@ -33,16 +33,17 @@ impl OcieItemRepository for PostgresOcieItemRepository {
         todo!()
     }
 
-
-    fn get(&self,conn:Self::Connection,id:Self::RecordIdType,) ->  Result<OcieItem, Self::Error> {
+    async fn get(
+        &self,
+        conn: Self::Connection,
+        id: Self::RecordIdType,
+    ) -> Result<OcieItem, Self::Error> {
         todo!()
     }
 
-
-    fn add(&self,conn:Self::Connection) ->  Result<OcieItem, Self::Error> {
+    async fn add(&self, conn: Self::Connection) -> Result<OcieItem, Self::Error> {
         todo!()
     }
-
 }
 
 #[tracing::instrument(name = "Get all OcieItems", skip(conn))]
