@@ -1696,6 +1696,7 @@ dependencies = [
  "anyhow",
  "async-graphql",
  "async-graphql-actix-web",
+ "async-trait",
  "bigdecimal",
  "chrono",
  "claim",
