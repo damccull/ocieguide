@@ -1,5 +1,6 @@
 use async_trait::async_trait;
 use sqlx::PgPool;
+use sqlx::postgres::PgRow;
 use uuid::Uuid;
 
 use super::model::OcieItem;
@@ -29,11 +30,11 @@ pub trait OcieItemRepository {
 pub struct PostgresOcieItemRepository;
 #[async_trait]
 impl OcieItemRepository for PostgresOcieItemRepository {
-    type Error = anyhow::Error;
+    type Error = RepositoryError;
 
     type Connection = PgPool;
 
-    type RecordIdType = i32;
+    type RecordIdType = Uuid;
 
     #[tracing::instrument(name="API V1 - get_all",skip(self,conn))]
     async fn get_all(&self, conn: &Self::Connection) -> Result<Vec<OcieItem>, Self::Error> {
@@ -82,39 +83,63 @@ impl OcieItemRepository for PostgresOcieItemRepository {
         let result = sqlx::query!(
             r#"SELECT id, nsn, lin, nomenclature, size, unit_of_issue, price
             FROM ocieitems
-            WHERE id = ?"#,
+            WHERE id = $1"#,
             id
-        )
-        .fetch_one(conn)
-        .await?
-        .into_iter()
-        .flat_map(|row| {
-            let nsn = match NationalStockNumber::parse(row.nsn) {
-                Ok(nsn) => nsn,
-                Err(e) => {
-                    tracing::error!("Error parsing NSN: {:?}", e);
-                    return None;
-                }
-            };
-            let lin = match LineItemNumber::parse(row.lin) {
-                Ok(lin) => lin,
-                Err(e) => {
-                    tracing::error!("Error parsing LIN: {:?}", e);
-                    return None;
-                }
-            };
-            Some(OcieItem {
-                id: row.id,
-                nsn,
-                lin,
-                nomenclature: row.nomenclature,
-                size: row.size,
-                unit_of_issue: row.unit_of_issue,
-                price: row.price,
+        ).map(|row| -> Result<_,anyhow::Error>{
+                let nsn = match NationalStockNumber::parse(row.nsn) {
+                    Ok(nsn) => nsn,
+                    Err(e) => {
+                        tracing::error!("Error parsing NSN: {:?}", e);
+                        return Err(e);
+                    }
+                };
+                let lin = match LineItemNumber::parse(row.lin) {
+                    Ok(lin) => lin,
+                    Err(e) => {
+                        tracing::error!("Error parsing LIN: {:?}", e);
+                        return Err(e);
+                    }
+                };
+                Ok(OcieItem {
+                    id: row.id,
+                    nsn,
+                    lin,
+                    nomenclature: row.nomenclature,
+                    size: row.size,
+                    unit_of_issue: row.unit_of_issue,
+                    price: row.price,
+                })
             })
-        })
-        .collect::<Vec<OcieItem>>();
-        Ok(result)
+        .fetch_one(&conn).await?;
+        //.await?;
+        // .into_iter()
+        // .flat_map(|row| {
+        //     let nsn = match NationalStockNumber::parse(row.nsn) {
+        //         Ok(nsn) => nsn,
+        //         Err(e) => {
+        //             tracing::error!("Error parsing NSN: {:?}", e);
+        //             return None;
+        //         }
+        //     };
+        //     let lin = match LineItemNumber::parse(row.lin) {
+        //         Ok(lin) => lin,
+        //         Err(e) => {
+        //             tracing::error!("Error parsing LIN: {:?}", e);
+        //             return None;
+        //         }
+        //     };
+        //     Some(OcieItem {
+        //         id: row.id,
+        //         nsn,
+        //         lin,
+        //         nomenclature: row.nomenclature,
+        //         size: row.size,
+        //         unit_of_issue: row.unit_of_issue,
+        //         price: row.price,
+        //     })
+        // })
+        // .collect::<Vec<OcieItem>>();
+        result
     }
 
     #[tracing::instrument(name="API V1 - add",skip(self,conn))]
