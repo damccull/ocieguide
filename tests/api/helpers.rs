@@ -1,5 +1,5 @@
 use ocieguide::{
-    application::{get_connection_pool, Application},
+    application::Application,
     configuration::{get_configuration, DatabaseSettings},
     telemetry::{get_subscriber, init_subscriber},
 };
