@@ -14,10 +14,16 @@ pub trait OcieItemRepository {
     async fn get_all(&self, conn: &Self::Connection) -> Result<Vec<OcieItem>, Self::Error>;
     async fn get(
         &self,
-        conn: &Self::Connection,
+        conn: Self::Connection,
         id: Self::RecordIdType,
     ) -> Result<OcieItem, Self::Error>;
-    async fn add(&self, conn: &Self::Connection) -> Result<OcieItem, Self::Error>;
+    async fn add(&self, conn: Self::Connection, item: OcieItem) -> Result<OcieItem, Self::Error>;
+    async fn update(
+        &self,
+        conn: Self::Connection,
+        id: Self::RecordIdType,
+        item: OcieItem,
+    ) -> Result<OcieItem, Self::Error>;
 }
 
 pub struct PostgresOcieItemRepository;
@@ -27,10 +33,43 @@ impl OcieItemRepository for PostgresOcieItemRepository {
 
     type Connection = PgPool;
 
-    type RecordIdType = Uuid;
+    type RecordIdType = i32;
 
     async fn get_all(&self, conn: &Self::Connection) -> Result<Vec<OcieItem>, Self::Error> {
-        todo!()
+        let result = sqlx::query!(
+            r#"SELECT id, nsn, lin, nomenclature, size, unit_of_issue, price
+            FROM ocieitems"#
+        )
+        .fetch_all(conn)
+        .await?
+        .into_iter()
+        .flat_map(|row| {
+            let nsn = match NationalStockNumber::parse(row.nsn) {
+                Ok(nsn) => nsn,
+                Err(e) => {
+                    tracing::error!("Error parsing NSN: {:?}", e);
+                    return None;
+                }
+            };
+            let lin = match LineItemNumber::parse(row.lin) {
+                Ok(lin) => lin,
+                Err(e) => {
+                    tracing::error!("Error parsing LIN: {:?}", e);
+                    return None;
+                }
+            };
+            Some(OcieItem {
+                id: row.id,
+                nsn,
+                lin,
+                nomenclature: row.nomenclature,
+                size: row.size,
+                unit_of_issue: row.unit_of_issue,
+                price: row.price,
+            })
+        })
+        .collect::<Vec<OcieItem>>();
+        Ok(result)
     }
 
     async fn get(
@@ -38,10 +77,54 @@ impl OcieItemRepository for PostgresOcieItemRepository {
         conn: Self::Connection,
         id: Self::RecordIdType,
     ) -> Result<OcieItem, Self::Error> {
+        let result = sqlx::query!(
+            r#"SELECT id, nsn, lin, nomenclature, size, unit_of_issue, price
+            FROM ocieitems
+            WHERE id = ?"#,
+            id
+        )
+        .fetch_one(conn)
+        .await?
+        .into_iter()
+        .flat_map(|row| {
+            let nsn = match NationalStockNumber::parse(row.nsn) {
+                Ok(nsn) => nsn,
+                Err(e) => {
+                    tracing::error!("Error parsing NSN: {:?}", e);
+                    return None;
+                }
+            };
+            let lin = match LineItemNumber::parse(row.lin) {
+                Ok(lin) => lin,
+                Err(e) => {
+                    tracing::error!("Error parsing LIN: {:?}", e);
+                    return None;
+                }
+            };
+            Some(OcieItem {
+                id: row.id,
+                nsn,
+                lin,
+                nomenclature: row.nomenclature,
+                size: row.size,
+                unit_of_issue: row.unit_of_issue,
+                price: row.price,
+            })
+        })
+        .collect::<Vec<OcieItem>>();
+        Ok(result)
+    }
+
+    async fn add(&self, conn: Self::Connection, item: OcieItem) -> Result<OcieItem, Self::Error> {
         todo!()
     }
 
-    async fn add(&self, conn: Self::Connection) -> Result<OcieItem, Self::Error> {
+    async fn update(
+        &self,
+        conn: Self::Connection,
+        id: Self::RecordIdType,
+        item: OcieItem,
+    ) -> Result<OcieItem, Self::Error> {
         todo!()
     }
 }

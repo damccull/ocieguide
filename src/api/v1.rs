@@ -5,5 +5,5 @@ pub fn configure(cfg: &mut web::ServiceConfig) {
 }
 
 fn get_all_items() -> HttpResponse {
-
+    todo!()
 }
