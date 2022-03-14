@@ -10,7 +10,7 @@ use crate::error_handling::error_chain_fmt;
 use crate::persistence::model::{LineItemNumber, NationalStockNumber};
 
 #[async_trait]
-pub trait OcieItemRepository {
+pub trait OcieItemRepository: Send + Sync + 'static {
     type Error;
     //type Connection;
     type RecordIdType;
