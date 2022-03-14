@@ -13,7 +13,3 @@ common names for equipment and see a high resolution photo along with all the
 data about a piece of equipment. They should also be able to upload new photos
 to existing equipment and supply data and photos for new pieces of equipment,
 which should be moderated before public availability.
-
-## Data Storage
-All data should be stored as a series of events and be projected into searchable
-tables.
