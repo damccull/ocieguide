@@ -6,8 +6,8 @@ use sqlx::{postgres::PgPoolOptions, PgPool};
 use tracing_actix_web::TracingLogger;
 
 use crate::{
-    configuration::{DatabaseSettings, Settings},
     api,
+    configuration::{DatabaseSettings, Settings},
 };
 
 pub struct Application {
