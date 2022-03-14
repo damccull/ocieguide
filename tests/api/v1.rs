@@ -1,7 +1,21 @@
+use ocieguide::persistence::model::{OcieItem, NationalStockNumber};
+use uuid::Uuid;
+
 use crate::helpers::TestApp;
 
 #[actix_rt::test]
-async fn get_all_returns_() {
+async fn add_persists_item_into_respository() {
+    // Arrange
+    let app = spawn_app().await;
+    let item = OcieItem { id: Uuid::new_v4(), nsn: NationalStockNumber("010-0000-00000-0000"), lin: LineItemNumber("N12345"), nomenclature: todo!(), size: todo!(), unit_of_issue: todo!(), price: todo!() }
+
+    // Act
+
+    // Assert
+}
+
+#[actix_rt::test]
+async fn get_all_returns_all_records() {
     // Arrange
     let test_app = TestApp::spawn().await;
 
