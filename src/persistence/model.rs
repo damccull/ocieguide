@@ -5,6 +5,7 @@ use uuid::Uuid;
 
 //TODO: Remove this dead code allowance
 #[allow(dead_code)]
+#[derive(Debug)]
 pub struct OcieItem {
     pub(crate) id: Uuid,
     pub(crate) nsn: NationalStockNumber,
