@@ -35,6 +35,7 @@ impl OcieItemRepository for PostgresOcieItemRepository {
 
     type RecordIdType = i32;
 
+    #[tracing::instrument(name="API V1 - get_all",skip(self,conn))]
     async fn get_all(&self, conn: &Self::Connection) -> Result<Vec<OcieItem>, Self::Error> {
         let result = sqlx::query!(
             r#"SELECT id, nsn, lin, nomenclature, size, unit_of_issue, price
@@ -72,6 +73,7 @@ impl OcieItemRepository for PostgresOcieItemRepository {
         Ok(result)
     }
 
+    #[tracing::instrument(name="API V1 - get",skip(self,conn))]
     async fn get(
         &self,
         conn: Self::Connection,
@@ -115,10 +117,12 @@ impl OcieItemRepository for PostgresOcieItemRepository {
         Ok(result)
     }
 
+    #[tracing::instrument(name="API V1 - add",skip(self,conn))]
     async fn add(&self, conn: Self::Connection, item: OcieItem) -> Result<OcieItem, Self::Error> {
         todo!()
     }
 
+    #[tracing::instrument(name="API V1 - update",skip(self,conn))]
     async fn update(
         &self,
         conn: Self::Connection,
