@@ -8,6 +8,7 @@ use tracing_actix_web::TracingLogger;
 use crate::{
     api,
     configuration::{DatabaseSettings, Settings},
+    persistence::repository::{OcieItemRepository, PostgresOcieItemRepository},
 };
 
 pub struct Application {
@@ -16,8 +17,8 @@ pub struct Application {
 }
 impl Application {
     pub async fn build(configuration: Settings) -> Result<Self, std::io::Error> {
-        // Get a connection pool for the database
-        let connection_pool = get_connection_pool(&configuration.database);
+        // Create a PostgresOcieItemRespository
+        let repository = PostgresOcieItemRepository::new(&configuration.database);
 
         // Get and store the application's host and port
         let address = format!(
@@ -39,7 +40,7 @@ impl Application {
 
         let server = run(
             listener,
-            connection_pool,
+            repository,
             // graphql_schema,
             configuration.application.base_url,
         )?;
@@ -59,12 +60,11 @@ impl Application {
 
 fn run(
     listener: TcpListener,
-    _db_pool: PgPool,
-    // graphql_schema: StarWarsSchema,
+    repository: impl OcieItemRepository,
     base_url: String,
 ) -> Result<Server, std::io::Error> {
     // Wrap shared things in smart pointers
-    // let db_pool = Data::new(db_pool);
+    let repository = Data::new(repository);
     let base_url = Data::new(base_url);
 
     // Capture the connection from the surrounding environment
@@ -80,19 +80,10 @@ fn run(
             )
             .wrap(TracingLogger::default())
             .configure(api::health_check::configure)
-            //.app_data(db_pool.clone())
+            .app_data(repository.clone())
             .app_data(base_url.clone())
     })
     .listen(listener)?
     .run();
     Ok(server)
-}
-
-/// Returns a `PgPool`
-///
-/// Public so that the integration tests can use this too.
-pub fn get_connection_pool(configuration: &DatabaseSettings) -> PgPool {
-    PgPoolOptions::new()
-        .connect_timeout(std::time::Duration::from_secs(2))
-        .connect_lazy_with(configuration.with_db())
 }

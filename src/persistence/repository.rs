@@ -1,49 +1,61 @@
 use async_trait::async_trait;
 use bigdecimal::BigDecimal;
-use sqlx::postgres::PgRow;
+use sqlx::postgres::PgPoolOptions;
 use sqlx::PgPool;
 use uuid::Uuid;
 
 use super::model::OcieItem;
+use crate::configuration::DatabaseSettings;
 use crate::error_handling::error_chain_fmt;
 use crate::persistence::model::{LineItemNumber, NationalStockNumber};
 
 #[async_trait]
 pub trait OcieItemRepository {
     type Error;
-    type Connection;
+    //type Connection;
     type RecordIdType;
-    async fn get_all(&self, conn: &Self::Connection) -> Result<Vec<OcieItem>, Self::Error>;
-    async fn get(
-        &self,
-        conn: Self::Connection,
-        id: Self::RecordIdType,
-    ) -> Result<OcieItem, Self::Error>;
-    async fn add(&self, conn: Self::Connection, item: OcieItem) -> Result<OcieItem, Self::Error>;
-    async fn update(
-        &self,
-        conn: Self::Connection,
-        id: Self::RecordIdType,
-        item: OcieItem,
-    ) -> Result<OcieItem, Self::Error>;
+    async fn get_all(&self) -> Result<Vec<OcieItem>, Self::Error>;
+    async fn get(&self, id: Self::RecordIdType) -> Result<OcieItem, Self::Error>;
+    async fn add(&self, item: OcieItem) -> Result<OcieItem, Self::Error>;
+    async fn update(&self, id: Self::RecordIdType, item: OcieItem)
+        -> Result<OcieItem, Self::Error>;
 }
 
-pub struct PostgresOcieItemRepository;
+pub struct PostgresOcieItemRepository {
+    pool: PgPool,
+}
+impl PostgresOcieItemRepository {
+    pub fn new(database_configuration: &DatabaseSettings) -> Self {
+        Self {
+            // Get a connection pool for the database
+            pool: Self::get_connection_pool(database_configuration),
+        }
+    }
+
+    /// Returns a `PgPool`
+    ///
+    /// Public so that the integration tests can use this too.
+    fn get_connection_pool(configuration: &DatabaseSettings) -> PgPool {
+        PgPoolOptions::new()
+            .connect_timeout(std::time::Duration::from_secs(2))
+            .connect_lazy_with(configuration.with_db())
+    }
+}
 #[async_trait]
 impl OcieItemRepository for PostgresOcieItemRepository {
     type Error = RepositoryError;
 
-    type Connection = PgPool;
+    //type Connection = PgPool;
 
     type RecordIdType = Uuid;
 
-    #[tracing::instrument(name = "API V1 - get_all", skip(self, conn))]
-    async fn get_all(&self, conn: &Self::Connection) -> Result<Vec<OcieItem>, Self::Error> {
+    #[tracing::instrument(name = "API V1 - get_all", skip(self))]
+    async fn get_all(&self) -> Result<Vec<OcieItem>, Self::Error> {
         let result = sqlx::query!(
             r#"SELECT id, nsn, lin, nomenclature, size, unit_of_issue, price
             FROM ocieitems"#
         )
-        .fetch_all(conn)
+        .fetch_all(&self.pool)
         .await
         .map_err(|e| RepositoryError::DatabaseError(e.into()))
         .into_iter()
@@ -77,12 +89,8 @@ impl OcieItemRepository for PostgresOcieItemRepository {
         Ok(result)
     }
 
-    #[tracing::instrument(name = "API V1 - get", skip(self, conn))]
-    async fn get(
-        &self,
-        conn: Self::Connection,
-        id: Self::RecordIdType,
-    ) -> Result<OcieItem, Self::Error> {
+    #[tracing::instrument(name = "API V1 - get", skip(self))]
+    async fn get(&self, id: Self::RecordIdType) -> Result<OcieItem, Self::Error> {
         struct Row {
             id: Uuid,
             nsn: String,
@@ -125,7 +133,7 @@ impl OcieItemRepository for PostgresOcieItemRepository {
                 price: row.price,
             })
         })
-        .fetch_one(&conn)
+        .fetch_one(&self.pool)
         .await;
 
         match result {
@@ -137,15 +145,14 @@ impl OcieItemRepository for PostgresOcieItemRepository {
         }
     }
 
-    #[tracing::instrument(name = "API V1 - add", skip(self, conn))]
-    async fn add(&self, conn: Self::Connection, item: OcieItem) -> Result<OcieItem, Self::Error> {
+    #[tracing::instrument(name = "API V1 - add", skip(self))]
+    async fn add(&self, item: OcieItem) -> Result<OcieItem, Self::Error> {
         todo!()
     }
 
-    #[tracing::instrument(name = "API V1 - update", skip(self, conn))]
+    #[tracing::instrument(name = "API V1 - update", skip(self))]
     async fn update(
         &self,
-        conn: Self::Connection,
         id: Self::RecordIdType,
         item: OcieItem,
     ) -> Result<OcieItem, Self::Error> {
