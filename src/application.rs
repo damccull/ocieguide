@@ -2,12 +2,12 @@ use std::net::TcpListener;
 
 use actix_cors::Cors;
 use actix_web::{dev::Server, web::Data, App, HttpServer};
-use sqlx::{postgres::PgPoolOptions, PgPool};
+
 use tracing_actix_web::TracingLogger;
 
 use crate::{
     api,
-    configuration::{DatabaseSettings, Settings},
+    configuration::Settings,
     persistence::repository::{OcieItemRepository, PostgresOcieItemRepository},
 };
 

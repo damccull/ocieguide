@@ -7,13 +7,13 @@ use uuid::Uuid;
 #[allow(dead_code)]
 #[derive(Debug, Serialize, Deserialize)]
 pub struct OcieItem {
-    pub(crate) id: Uuid,
-    pub(crate) nsn: NationalStockNumber,
-    pub(crate) lin: LineItemNumber,
-    pub(crate) nomenclature: String,
-    pub(crate) size: Option<String>,
-    pub(crate) unit_of_issue: Option<String>,
-    pub(crate) price: Option<BigDecimal>,
+    pub id: Uuid,
+    pub nsn: NationalStockNumber,
+    pub lin: LineItemNumber,
+    pub nomenclature: String,
+    pub size: Option<String>,
+    pub unit_of_issue: Option<String>,
+    pub price: Option<BigDecimal>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
