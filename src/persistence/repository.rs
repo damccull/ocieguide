@@ -14,6 +14,7 @@ pub trait OcieItemRepository: Send + Sync + 'static {
     type Error;
     //type Connection;
     type RecordIdType;
+    fn new(database_settings: &DatabaseSettings) -> Self;
     async fn get_all(&self) -> Result<Vec<OcieItem>, Self::Error>;
     async fn get(&self, id: Self::RecordIdType) -> Result<OcieItem, Self::Error>;
     async fn add(&self, item: OcieItem) -> Result<OcieItem, Self::Error>;
@@ -25,13 +26,6 @@ pub struct PostgresOcieItemRepository {
     pool: PgPool,
 }
 impl PostgresOcieItemRepository {
-    pub fn new(database_configuration: &DatabaseSettings) -> Self {
-        Self {
-            // Get a connection pool for the database
-            pool: Self::get_connection_pool(database_configuration),
-        }
-    }
-
     /// Returns a `PgPool`
     ///
     /// Public so that the integration tests can use this too.
@@ -48,6 +42,13 @@ impl OcieItemRepository for PostgresOcieItemRepository {
     //type Connection = PgPool;
 
     type RecordIdType = Uuid;
+
+    fn new(database_configuration: &DatabaseSettings) -> Self {
+        Self {
+            // Get a connection pool for the database
+            pool: Self::get_connection_pool(database_configuration),
+        }
+    }
 
     #[tracing::instrument(name = "API V1 - get_all", skip(self))]
     async fn get_all(&self) -> Result<Vec<OcieItem>, Self::Error> {

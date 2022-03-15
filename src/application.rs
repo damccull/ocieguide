@@ -34,11 +34,7 @@ impl Application {
         // can use random ports
         let port = listener.local_addr().unwrap().port();
 
-        let server = run(
-            listener,
-            repository,
-            configuration.application.base_url,
-        )?;
+        let server = run(listener, repository, configuration.application.base_url)?;
 
         Ok(Self { port, server })
     }
