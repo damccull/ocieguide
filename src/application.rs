@@ -34,14 +34,9 @@ impl Application {
         // can use random ports
         let port = listener.local_addr().unwrap().port();
 
-        // let graphql_schema = StarWarsSchema::build(QueryRoot, EmptyMutation, EmptySubscription)
-        //     .data(StarWars::new())
-        //     .finish();
-
         let server = run(
             listener,
             repository,
-            // graphql_schema,
             configuration.application.base_url,
         )?;
 
