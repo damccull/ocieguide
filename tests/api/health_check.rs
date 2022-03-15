@@ -1,9 +1,11 @@
+use ocieguide::persistence::repository::PostgresOcieItemRepository;
+
 use crate::helpers::TestApp;
 
 #[actix_rt::test]
 async fn health_check_works() {
     // Arrange
-    let test_app = TestApp::spawn().await;
+    let test_app = TestApp::<PostgresOcieItemRepository>::spawn().await;
 
     // Act
     let response = reqwest::Client::new()

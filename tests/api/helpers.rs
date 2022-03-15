@@ -1,7 +1,8 @@
 use ocieguide::{
     application::Application,
     configuration::{get_configuration, DatabaseSettings},
-    telemetry::{get_subscriber, init_subscriber}, persistence::repository::{PostgresOcieItemRepository, OcieItemRepository},
+    persistence::repository::{OcieItemRepository, PostgresOcieItemRepository},
+    telemetry::{get_subscriber, init_subscriber},
 };
 use once_cell::sync::Lazy;
 use sqlx::{postgres::PgPoolOptions, ConnectOptions, Connection, Executor, PgConnection, PgPool};
@@ -21,15 +22,17 @@ static TRACING: Lazy<()> = Lazy::new(|| {
     }
 });
 
-pub struct TestApp {
+pub struct TestApp<TRepository> {
     pub address: String,
-    pub repository: impl OcieItemRepository,
+    pub repository: TRepository,
     pub port: u16,
 }
 
-impl TestApp {
+impl<TRepository> TestApp<TRepository>
+where
+    TRepository: OcieItemRepository,
+{
     pub async fn spawn() -> Self {
-        //
         // Set up logging
         Lazy::force(&TRACING);
 
@@ -42,8 +45,7 @@ impl TestApp {
         };
 
         // Create a PostgresOcieItemRespository
-        let repository = PostgresOcieItemRepository::new(&configuration.database);
-
+        let repository = TRepository::new(&configuration.database);
 
         // Launch the application as a background task
         let application = Application::build(configuration.clone())
