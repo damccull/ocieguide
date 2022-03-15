@@ -1,7 +1,7 @@
 use ocieguide::{
     application::Application,
     configuration::{get_configuration, DatabaseSettings},
-    telemetry::{get_subscriber, init_subscriber},
+    telemetry::{get_subscriber, init_subscriber}, persistence::repository::{PostgresOcieItemRepository, OcieItemRepository},
 };
 use once_cell::sync::Lazy;
 use sqlx::{postgres::PgPoolOptions, ConnectOptions, Connection, Executor, PgConnection, PgPool};
@@ -23,7 +23,7 @@ static TRACING: Lazy<()> = Lazy::new(|| {
 
 pub struct TestApp {
     pub address: String,
-    pub db_pool: PgPool,
+    pub repository: impl OcieItemRepository,
     pub port: u16,
 }
 
@@ -41,7 +41,9 @@ impl TestApp {
             c
         };
 
-        configure_database(&configuration.database).await;
+        // Create a PostgresOcieItemRespository
+        let repository = PostgresOcieItemRepository::new(&configuration.database);
+
 
         // Launch the application as a background task
         let application = Application::build(configuration.clone())
@@ -55,7 +57,7 @@ impl TestApp {
 
         let test_app = TestApp {
             address: format!("http://localhost:{}", application_port),
-            db_pool: get_connection_pool(&configuration.database),
+            repository: repository,
             port: application_port,
         };
 
