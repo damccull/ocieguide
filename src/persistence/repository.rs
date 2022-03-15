@@ -147,15 +147,15 @@ impl OcieItemRepository for PostgresOcieItemRepository {
     }
 
     #[tracing::instrument(name = "API V1 - add", skip(self))]
-    async fn add(&self, item: OcieItem) -> Result<OcieItem, Self::Error> {
+    async fn add(&self, _item: OcieItem) -> Result<OcieItem, Self::Error> {
         todo!()
     }
 
     #[tracing::instrument(name = "API V1 - update", skip(self))]
     async fn update(
         &self,
-        id: Self::RecordIdType,
-        item: OcieItem,
+        _id: Self::RecordIdType,
+        _item: OcieItem,
     ) -> Result<OcieItem, Self::Error> {
         todo!()
     }

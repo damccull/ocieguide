@@ -1,7 +1,7 @@
 use ocieguide::{
     application::Application,
     configuration::{get_configuration, DatabaseSettings},
-    persistence::repository::{OcieItemRepository, PostgresOcieItemRepository},
+    persistence::{repository::OcieItemRepository, model::OcieItem},
     telemetry::{get_subscriber, init_subscriber},
 };
 use once_cell::sync::Lazy;
@@ -44,8 +44,7 @@ where
             c
         };
 
-        // Create a PostgresOcieItemRespository
-        let repository = TRepository::new(&configuration.database);
+        let repository = configure_database::<TRepository>(&configuration.database).await;
 
         // Launch the application as a background task
         let application = Application::build(configuration.clone())
@@ -59,7 +58,7 @@ where
 
         let test_app = TestApp {
             address: format!("http://localhost:{}", application_port),
-            repository: repository,
+            repository,
             port: application_port,
         };
 
@@ -67,7 +66,7 @@ where
     }
 }
 
-async fn configure_database(config: &DatabaseSettings) -> PgPool {
+async fn configure_database<TRepository:OcieItemRepository>(config: &DatabaseSettings) -> impl OcieItemRepository {
     // Create a new database
     let mut connection = PgConnection::connect_with(&config.without_db())
         .await
@@ -77,6 +76,10 @@ async fn configure_database(config: &DatabaseSettings) -> PgPool {
         .execute(&*format!(r#"CREATE DATABASE "{}";"#, config.database_name))
         .await
         .expect("Failed to create database.");
+
+
+// Create a PostgresOcieItemRespository
+let repository = TRepository::new(&config);
 
     // Create a database pool for the web server, specifying that sqlx logs
     // should be at the `tracing` level.

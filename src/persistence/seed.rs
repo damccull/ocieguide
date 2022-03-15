@@ -1,3 +1,5 @@
+// TODO: Remove dead code allow
+#[allow(dead_code)]
 struct OcieJsonItem {
     lin: String,
     ets: bool,
