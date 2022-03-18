@@ -1,12 +1,11 @@
 use ocieguide::{
     application::Application,
     configuration::{get_configuration, DatabaseSettings},
-    persistence::{repository::OcieItemRepository, model::OcieItem},
+    persistence::{model::OcieItem, OcieItemRepository},
     telemetry::{get_subscriber, init_subscriber},
 };
 use once_cell::sync::Lazy;
-use sqlx::{postgres::PgPoolOptions, ConnectOptions, Connection, Executor, PgConnection, PgPool};
-use tracing::log::LevelFilter;
+
 use uuid::Uuid;
 
 static TRACING: Lazy<()> = Lazy::new(|| {
@@ -22,7 +21,10 @@ static TRACING: Lazy<()> = Lazy::new(|| {
     }
 });
 
-pub struct TestApp<TRepository> {
+pub struct TestApp<TRepository>
+where
+    TRepository: OcieItemRepository,
+{
     pub address: String,
     pub repository: TRepository,
     pub port: u16,
@@ -66,39 +68,10 @@ where
     }
 }
 
-async fn configure_database<TRepository:OcieItemRepository>(config: &DatabaseSettings) -> impl OcieItemRepository {
+async fn configure_database<TRepository>(config: &DatabaseSettings) -> impl OcieItemRepository
+where
+    TRepository: OcieItemRepository,
+{
     // Create a new database
-    let mut connection = PgConnection::connect_with(&config.without_db())
-        .await
-        .expect("Failed to connect to postgres.");
-
-    connection
-        .execute(&*format!(r#"CREATE DATABASE "{}";"#, config.database_name))
-        .await
-        .expect("Failed to create database.");
-
-
-// Create a PostgresOcieItemRespository
-let repository = TRepository::new(&config);
-
-    // Create a database pool for the web server, specifying that sqlx logs
-    // should be at the `tracing` level.
-    let db_connect_options = config
-        .with_db()
-        .log_statements(LevelFilter::Trace)
-        .to_owned();
-
-    let connection_pool = PgPoolOptions::new()
-        .connect_timeout(std::time::Duration::from_secs(2))
-        .connect_with(db_connect_options)
-        .await
-        .expect("Failed to connect to Postgres.");
-
-    // Run database migrations
-    sqlx::migrate!("./migrations")
-        .run(&connection_pool)
-        .await
-        .expect("Failed to migrate the database.");
-
-    connection_pool
+    TRepository::new(config).await
 }

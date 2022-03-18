@@ -1,6 +1,6 @@
 use actix_web::{web, HttpResponse};
 
-use crate::persistence::repository::OcieItemRepository;
+use crate::persistence::OcieItemRepository;
 
 pub fn configure(cfg: &mut web::ServiceConfig) {
     cfg.service(web::resource("/api/v1"));

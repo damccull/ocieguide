@@ -8,7 +8,7 @@ use tracing_actix_web::TracingLogger;
 use crate::{
     api,
     configuration::Settings,
-    persistence::repository::{OcieItemRepository, PostgresOcieItemRepository},
+    persistence::{repository::PostgresOcieItemRepository, OcieItemRepository},
 };
 
 pub struct Application {
@@ -18,7 +18,7 @@ pub struct Application {
 impl Application {
     pub async fn build(configuration: Settings) -> Result<Self, std::io::Error> {
         // Create a PostgresOcieItemRespository
-        let repository = PostgresOcieItemRepository::new(&configuration.database);
+        let repository = PostgresOcieItemRepository::new(&configuration.database).await;
 
         // Get and store the application's host and port
         let address = format!(
