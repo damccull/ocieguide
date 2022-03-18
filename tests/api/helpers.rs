@@ -1,7 +1,7 @@
 use ocieguide::{
     application::Application,
     configuration::{get_configuration, DatabaseSettings},
-    persistence::{model::OcieItem, OcieItemRepository},
+    persistence::OcieItemRepository,
     telemetry::{get_subscriber, init_subscriber},
 };
 use once_cell::sync::Lazy;
@@ -21,18 +21,14 @@ static TRACING: Lazy<()> = Lazy::new(|| {
     }
 });
 
-pub struct TestApp<TRepository>
-where
-    TRepository: OcieItemRepository,
-{
+pub struct TestApp<TRepository> {
     pub address: String,
     pub repository: TRepository,
     pub port: u16,
 }
 
-impl<TRepository> TestApp<TRepository>
-where
-    TRepository: OcieItemRepository,
+impl<TRepository: OcieItemRepository> TestApp<TRepository>
+
 {
     pub async fn spawn() -> Self {
         // Set up logging
@@ -68,10 +64,9 @@ where
     }
 }
 
-async fn configure_database<TRepository>(config: &DatabaseSettings) -> impl OcieItemRepository
-where
-    TRepository: OcieItemRepository,
-{
+async fn configure_database<TRepository: OcieItemRepository>(
+    config: &DatabaseSettings,
+) -> TRepository {
     // Create a new database
     TRepository::new(config).await
 }
