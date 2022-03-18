@@ -13,7 +13,7 @@ async fn add_persists_item_into_respository() {
     let _app = TestApp::<PostgresOcieItemRepository>::spawn().await;
     let _item = OcieItem {
         id: Uuid::new_v4(),
-        nsn: NationalStockNumber::parse("010-0000-00000-0000".into()).unwrap(),
+        nsn: NationalStockNumber::parse("0100-00-000-0000".into()).unwrap(),
         lin: LineItemNumber::parse("N12345".into()).unwrap(),
         nomenclature: "TEST ITEM".into(),
         size: Some("LARGE".into()),
