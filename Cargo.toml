@@ -1,0 +1,4 @@
+[workspace]
+default-members = ["website"]
+members = ["website", "xtask"]
+resolver = "2"
