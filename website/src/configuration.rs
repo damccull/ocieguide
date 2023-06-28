@@ -1,6 +1,5 @@
-use self::settings::Settings;
-
 mod settings;
+pub use settings::*;
 
 pub fn get_configuration() -> Result<Settings, config::ConfigError> {
     // Grab the current execution directory

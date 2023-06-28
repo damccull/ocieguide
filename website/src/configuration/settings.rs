@@ -1,6 +1,10 @@
-use secrecy::Secret;
+use secrecy::{ExposeSecret, Secret};
 use serde::Deserialize;
 use serde_aux::field_attributes::deserialize_number_from_string;
+use sqlx::{
+    postgres::{PgConnectOptions, PgSslMode},
+    ConnectOptions,
+};
 
 #[derive(Clone, Debug, Deserialize)]
 pub struct Settings {
@@ -28,6 +32,32 @@ pub struct DatabaseSettings {
     pub host: String,
     pub database_name: String,
     pub require_ssl: bool,
+}
+
+impl DatabaseSettings {
+    pub fn with_db(&self) -> PgConnectOptions {
+        let mut options = self.without_db().database(&self.database_name);
+
+        // sqlx is noisy by default. Change default level to TRACE for sqlx.
+        options.log_statements(tracing::log::LevelFilter::Trace);
+
+        options
+    }
+
+    pub fn without_db(&self) -> PgConnectOptions {
+        let ssl_mode = if self.require_ssl {
+            PgSslMode::Require
+        } else {
+            PgSslMode::Disable
+        };
+
+        PgConnectOptions::new()
+            .host(&self.host)
+            .username(&self.username)
+            .password(self.password.expose_secret())
+            .port(self.port)
+            .ssl_mode(ssl_mode)
+    }
 }
 
 // #[derive(Clone, Debug, Deserialize)]
