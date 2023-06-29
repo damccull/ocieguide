@@ -1,0 +1,56 @@
+# fly.toml app configuration file generated for ocieguide on 2023-06-29T00:09:59-04:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = "ocieguide"
+primary_region = "lax"
+kill_signal = "SIGINT"
+kill_timeout = "5s"
+
+[experimental]
+  auto_rollback = true
+
+[env]
+  APP_APPLICATION__BASE_URL = "https://ocieguide.fly.dev"
+  APP_DATABASE__DATABASE_NAME = "ocieguide"
+  APP_DATABASE__HOST = "damccullpg.flycast"
+  APP_DATABASE__PASSWORD = "Do not put password here. Put it in a 'fly secret'."
+  APP_DATABASE__PORT = "5432"
+  APP_DATABASE__REQUIRE_SSL = "false"
+  APP_DATABASE__USERNAME = "ocieguide"
+  APP_EMAIL_CLIENT__SENDER_EMAIL = "contact@ocieguide.com"
+  PRIMARY_REGION = "lax"
+
+[[services]]
+  protocol = "tcp"
+  internal_port = 8000
+  processes = ["app"]
+
+  [[services.ports]]
+    port = 80
+    handlers = ["http"]
+    force_https = true
+
+  [[services.ports]]
+    port = 443
+    handlers = ["tls", "http"]
+  [services.concurrency]
+    type = "connections"
+    hard_limit = 25
+    soft_limit = 20
+
+  [[services.tcp_checks]]
+    interval = "15s"
+    timeout = "2s"
+    grace_period = "1s"
+    restart_limit = 0
+
+  [[services.http_checks]]
+    interval = "10s"
+    timeout = "2s"
+    grace_period = "5s"
+    restart_limit = 0
+    method = "get"
+    path = "/health_check"
+    protocol = "http"
