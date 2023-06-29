@@ -12,9 +12,11 @@ path = "src/main.rs"
 name = "ocieguide"
 
 [dependencies]
+anyhow = "1.0.71"
 axum = "0.6.18"
 config = "0.13.3"
 http = "0.2.9"
+hyper = "0.14.27"
 secrecy = { version = "0.8.0", features = ["serde"] }
 serde = { version = "1.0.164", features = ["derive"] }
 serde-aux = "4.2.0"
