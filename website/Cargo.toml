@@ -14,6 +14,7 @@ name = "ocieguide"
 [dependencies]
 anyhow = "1.0.71"
 axum = "0.6.18"
+chrono = { version = "0.4.26", default-features = false, features = ["clock"] }
 config = "0.13.3"
 http = "0.2.9"
 hyper = "0.14.27"
