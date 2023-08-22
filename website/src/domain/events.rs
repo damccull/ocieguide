@@ -1,6 +1,8 @@
 use chrono::{DateTime, Utc};
 use sqlx::types::Uuid;
 
+use super::User;
+
 pub enum EquipmentOperation {
     Add,
     Edit,
@@ -16,11 +18,19 @@ pub struct EquipmentEvent {
     user: User,
 }
 
-pub struct EquipmentSuggestion {
+pub enum EquipmentProposalOperation {
+    Add,
+    Edit,
+    Retire,
+    Approve,
+    Reject,
+}
+
+pub struct EquipmentProposalEvent {
     event_id: Uuid,
     aggregate_id: Uuid,
     timestamp: DateTime<Utc>,
-    operation: EquipmentOperation,
+    operation: EquipmentProposalOperation,
     payload: String,
     user: User,
 }
