@@ -3,34 +3,24 @@ use sqlx::types::Uuid;
 
 use super::User;
 
-pub enum EquipmentOperation {
-    Add,
-    Edit,
-    Retire,
-}
-
-pub struct EquipmentEvent {
+pub struct EquipmentEventData {
     event_id: Uuid,
     aggregate_id: Uuid,
     timestamp: DateTime<Utc>,
-    operation: EquipmentOperation,
     payload: String,
     user: User,
 }
 
-pub enum EquipmentProposalOperation {
-    Add,
-    Edit,
-    Retire,
-    Approve,
-    Reject,
+pub enum EquipmentEvent {
+    Added(EquipmentEventData),
+    Edited(EquipmentEventData),
+    Retired(EquipmentEventData),
 }
 
-pub struct EquipmentProposalEvent {
-    event_id: Uuid,
-    aggregate_id: Uuid,
-    timestamp: DateTime<Utc>,
-    operation: EquipmentProposalOperation,
-    payload: String,
-    user: User,
+pub enum EquipmentProposalEvent {
+    Added(EquipmentEventData),
+    Edited(EquipmentEventData),
+    Retired(EquipmentEventData),
+    Approved(EquipmentEventData),
+    Rejected(EquipmentEventData),
 }
