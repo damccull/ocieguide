@@ -14,7 +14,6 @@ name = "ocieguide"
 [dependencies]
 anyhow = "~1.0.75"
 actix-web = "4.4.0"
-#actix-web = "4.0.0"
 actix-cors = "~0.6.4"
 actix-http = "3.4.0"
 async-graphql = { git = "https://github.com/async-graphql/async-graphql.git", branch = "master", features = [
@@ -40,7 +39,6 @@ sqlx = { version = "0.7.1", default-features = false, features = [
     "bigdecimal",
     "macros",
     "migrate",
-    "offline",
     "postgres",
     "runtime-actix-rustls",
     "uuid",
