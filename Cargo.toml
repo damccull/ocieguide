@@ -2,3 +2,11 @@
 default-members = ["website"]
 members = ["website", "xtask"]
 resolver = "2"
+
+[patch.crates-io]
+wasix-tokio =  { git = 'https://github.com/wasix-org/tokio.git', package = 'tokio', branch = 'wasix-1.28.1' }
+#wasix-tokio =  { git = 'https://github.com/wasix-org/tokio.git', package = 'tokio', branch = 'wasix-1.24.2-fixed' }
+wasix-tokio-rustls = { git = 'https://github.com/wasix-org/tokio-rustls.git', package = 'tokio-rustls', branch = 'main' }
+wasix-ring = { git = 'https://github.com/wasix-org/ring.git', package = 'ring', branch = 'wasix' }
+wasix-rustls = { git = 'https://github.com/wasix-org/rustls.git', package = 'rustls', branch = 'v0.21.5' }
+
