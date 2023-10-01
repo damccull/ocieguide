@@ -39,7 +39,7 @@ impl DatabaseSettings {
         let mut options = self.without_db().database(&self.database_name);
 
         // sqlx is noisy by default. Change default level to TRACE for sqlx.
-        options.log_statements(tracing::log::LevelFilter::Trace);
+        options = options.log_statements(tracing::log::LevelFilter::Trace);
 
         options
     }
