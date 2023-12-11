@@ -2,8 +2,14 @@ use ocieguide::{application::Application, telemetry};
 
 #[tokio::main]
 async fn main() -> std::io::Result<()> {
+    // Set up tracing here so we can use tracing::instrument on the startup fn.
     let subscriber = telemetry::get_subscriber("ocieguide", "info".into(), std::io::stdout);
     telemetry::init_subscriber(subscriber);
+    startup().await
+}
+
+#[tracing::instrument]
+async fn startup() -> std::io::Result<()> {
     tracing::info!("🪵Tracing enabled");
 
     let app = Application::build("127.0.0.1", 8000).await?;
