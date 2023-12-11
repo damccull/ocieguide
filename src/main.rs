@@ -1,23 +1,14 @@
-use actix_web::{web, App, HttpRequest, HttpServer, Responder, HttpResponse};
-
-async fn greet(req: HttpRequest) -> impl Responder {
-    let name = req.match_info().get("name").unwrap_or("world");
-    format!("Hello {}", &name)
-}
-
-async fn health_check() -> impl Responder {
-    HttpResponse::Ok()
-}
+use ocieguide::{application::Application, telemetry};
 
 #[tokio::main]
-async fn main() -> Result<(), std::io::Error> {
-    HttpServer::new(|| {
-        App::new()
-            .route("/", web::get().to(greet))
-            .route("/health_check", web::get().to(health_check))
-            .route("/{name}", web::get().to(greet))
-    })
-    .bind("127.0.0.1:8000")?
-    .run()
-    .await
+async fn main() -> std::io::Result<()> {
+    let subscriber = telemetry::get_subscriber("ocieguide", "info".into(), std::io::stdout);
+    telemetry::init_subscriber(subscriber);
+    tracing::info!("🪵Tracing enabled");
+
+    let app = Application::build("127.0.0.1", 8000).await?;
+
+    tracing::info!("🕸️Starting web server");
+    app.run_until_stopped().await?;
+    Ok(())
 }
