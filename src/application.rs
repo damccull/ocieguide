@@ -6,7 +6,7 @@ use actix_web::{
     App, HttpServer,
 };
 
-use crate::routes::{app_health, home};
+use crate::routes::{app_health, home, item};
 
 pub struct Application {
     port: u16,
@@ -50,6 +50,7 @@ pub fn configure_services(cfg: &mut ServiceConfig) {
     cfg.service(
         web::scope("")
             .service(app_health::health_check)
-            .service(home::home),
+            .service(home::home)
+            .service(item::item),
     );
 }
