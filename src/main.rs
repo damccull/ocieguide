@@ -10,7 +10,8 @@ async fn main() -> std::io::Result<()> {
 
 #[tracing::instrument]
 async fn startup() -> std::io::Result<()> {
-    tracing::info!("🪵Tracing enabled");
+    tracing::info!("🌱Starting application");
+    tracing::info!("📄Tracing enabled");
 
     let app = Application::build("127.0.0.1", 8000).await?;
 

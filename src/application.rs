@@ -14,6 +14,7 @@ pub struct Application {
 }
 
 impl Application {
+    #[tracing::instrument(level = "debug")]
     pub async fn build(listen_address: &str, listen_port: u16) -> Result<Self, std::io::Error> {
         let address = format!("{}:{}", listen_address, listen_port);
         let listener = TcpListener::bind(address)?;
@@ -26,11 +27,14 @@ impl Application {
         self.port
     }
 
+    #[tracing::instrument(skip(self), level = "debug")]
     pub async fn run_until_stopped(self) -> Result<(), std::io::Error> {
+        tracing::info!("👟 Server is running");
         self.server.await
     }
 }
 
+#[tracing::instrument(level = "debug")]
 pub fn build_server(listener: TcpListener) -> Result<Server, std::io::Error> {
     let config = move |cfg: &mut ServiceConfig| {
         configure_services(cfg);
