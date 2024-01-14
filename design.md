@@ -31,6 +31,26 @@ Images will be named with a prefix of the item's db record id, then then resolut
 
 Database will hold individual items.
 
+Searches will need to search both items table and common names table, and if found in either location
+look up the item in items table and display it in results.
+
+### Items Table
+
+* id (pk)
+* lin
+* nsn
+* ets_transferrable
+* nomenclature
+* size
+* cic
+* ui
+* unit_price
+
+### Common Names Table
+
+* item_id (pk, fk)
+* common_name (pk)
+
 ## Admin Area
 
 Regular HTML-based site, nothing fancy. Allow admins to read suggestions and approve photos.
